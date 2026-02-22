@@ -21,7 +21,7 @@ logger = logging.getLogger("ald01.mcp")
 MCP_REGISTRY = {
     "filesystem": {
         "name": "Filesystem",
-        "icon": "📂",
+        "icon": "folder-open",
         "description": "Read, write, and navigate files and directories",
         "package": "@anthropic-ai/mcp-server-filesystem",
         "command": "npx",
@@ -30,7 +30,7 @@ MCP_REGISTRY = {
     },
     "github": {
         "name": "GitHub",
-        "icon": "🐙",
+        "icon": "github",
         "description": "Interact with GitHub repos, issues, PRs, and code",
         "package": "@anthropic-ai/mcp-server-github",
         "command": "npx",
@@ -40,7 +40,7 @@ MCP_REGISTRY = {
     },
     "postgres": {
         "name": "PostgreSQL",
-        "icon": "🐘",
+        "icon": "database",
         "description": "Query PostgreSQL databases",
         "package": "@anthropic-ai/mcp-server-postgres",
         "command": "npx",
@@ -50,7 +50,7 @@ MCP_REGISTRY = {
     },
     "memory": {
         "name": "Memory",
-        "icon": "🧠",
+        "icon": "brain",
         "description": "Knowledge graph-based persistent memory",
         "package": "@anthropic-ai/mcp-server-memory",
         "command": "npx",
@@ -59,7 +59,7 @@ MCP_REGISTRY = {
     },
     "puppeteer": {
         "name": "Puppeteer",
-        "icon": "🎭",
+        "icon": "globe",
         "description": "Browser automation and web scraping",
         "package": "@anthropic-ai/mcp-server-puppeteer",
         "command": "npx",
@@ -68,7 +68,7 @@ MCP_REGISTRY = {
     },
     "sequential-thinking": {
         "name": "Sequential Thinking",
-        "icon": "💭",
+        "icon": "list-ordered",
         "description": "Step-by-step reasoning and problem decomposition",
         "package": "@anthropic-ai/mcp-server-sequential-thinking",
         "command": "npx",
@@ -77,7 +77,7 @@ MCP_REGISTRY = {
     },
     "brave-search": {
         "name": "Brave Search",
-        "icon": "🦁",
+        "icon": "search",
         "description": "Web search via Brave Search API",
         "package": "@anthropic-ai/mcp-server-brave-search",
         "command": "npx",
@@ -87,7 +87,7 @@ MCP_REGISTRY = {
     },
     "tavily-search": {
         "name": "Tavily Search",
-        "icon": "🔍",
+        "icon": "scan-search",
         "description": "AI-powered web research and content extraction",
         "package": "@tavily/mcp-server",
         "command": "npx",
@@ -97,7 +97,7 @@ MCP_REGISTRY = {
     },
     "slack": {
         "name": "Slack",
-        "icon": "💬",
+        "icon": "message-circle",
         "description": "Send and read Slack messages",
         "package": "@anthropic-ai/mcp-server-slack",
         "command": "npx",
@@ -107,7 +107,7 @@ MCP_REGISTRY = {
     },
     "sqlite": {
         "name": "SQLite",
-        "icon": "💾",
+        "icon": "hard-drive",
         "description": "Query SQLite databases",
         "package": "@anthropic-ai/mcp-server-sqlite",
         "command": "npx",
@@ -116,7 +116,7 @@ MCP_REGISTRY = {
     },
     "fetch": {
         "name": "Fetch",
-        "icon": "🌐",
+        "icon": "download",
         "description": "HTTP requests and URL content extraction",
         "package": "@anthropic-ai/mcp-server-fetch",
         "command": "npx",
@@ -125,7 +125,7 @@ MCP_REGISTRY = {
     },
     "docker": {
         "name": "Docker",
-        "icon": "🐳",
+        "icon": "container",
         "description": "Manage Docker containers and images",
         "package": "@anthropic-ai/mcp-server-docker",
         "command": "npx",
@@ -143,7 +143,7 @@ class MCPManager:
 
     def __init__(self):
         self._installed: Dict[str, Dict[str, Any]] = {}
-        self._running: Dict[str, Any] = {}  # Running processes
+        self._running: Dict[str, Any] = {}
         self._persistence_path = os.path.join(CONFIG_DIR, "mcp_config.json")
         self._load()
 
@@ -166,17 +166,15 @@ class MCPManager:
         ]
 
     async def install_server(self, server_id: str) -> Dict[str, Any]:
-        """Install an MCP server."""
+        """Install an MCP server via npm."""
         if server_id not in MCP_REGISTRY:
             return {"success": False, "error": f"Unknown MCP server: {server_id}"}
 
         info = MCP_REGISTRY[server_id]
 
-        # Check npm is available
         if not shutil.which("npx"):
             return {"success": False, "error": "npx not found. Install Node.js first."}
 
-        # Install via npm
         try:
             proc = await asyncio.create_subprocess_exec(
                 "npm", "install", "-g", info["package"],
@@ -186,7 +184,8 @@ class MCPManager:
             stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=120)
 
             if proc.returncode != 0:
-                return {"success": False, "error": stderr.decode("utf-8", errors="replace")[:500]}
+                err_msg = stderr.decode("utf-8", errors="replace")[:500]
+                return {"success": False, "error": err_msg}
 
             self._installed[server_id] = {
                 "name": info["name"],
@@ -197,12 +196,12 @@ class MCPManager:
                 "enabled": True,
             }
             self._save()
-
             return {"success": True, "server": server_id, "package": info["package"]}
 
         except asyncio.TimeoutError:
-            return {"success": False, "error": "Installation timed out"}
+            return {"success": False, "error": "Installation timed out after 120s"}
         except Exception as e:
+            logger.error(f"MCP install error for {server_id}: {e}")
             return {"success": False, "error": str(e)}
 
     def uninstall_server(self, server_id: str) -> bool:
@@ -227,7 +226,7 @@ class MCPManager:
         return False
 
     def get_config_for_client(self) -> Dict[str, Any]:
-        """Generate MCP client config (for tools like Claude Desktop)."""
+        """Generate MCP client config (e.g. for Claude Desktop, Windsurf)."""
         servers = {}
         for sid, sdata in self._installed.items():
             if not sdata.get("enabled"):
@@ -241,15 +240,15 @@ class MCPManager:
             if env_vars:
                 config["env"] = {v: os.environ.get(v, "") for v in env_vars}
             servers[sid] = config
-
         return {"mcpServers": servers}
 
     def export_config(self, path: str = "") -> str:
-        """Export MCP config to a file."""
+        """Export MCP config to a JSON file."""
         config = self.get_config_for_client()
         if not path:
             path = os.path.join(CONFIG_DIR, "mcp_servers.json")
-        with open(path, "w") as f:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
             json.dump(config, f, indent=2)
         return path
 
@@ -259,13 +258,13 @@ class MCPManager:
             "installed": len(self._installed),
             "enabled": sum(1 for s in self._installed.values() if s.get("enabled")),
             "running": len(self._running),
-            "categories": list(set(s.get("category", "") for s in MCP_REGISTRY.values())),
+            "categories": sorted(set(s.get("category", "") for s in MCP_REGISTRY.values())),
         }
 
     def _save(self) -> None:
         try:
             os.makedirs(os.path.dirname(self._persistence_path), exist_ok=True)
-            with open(self._persistence_path, "w") as f:
+            with open(self._persistence_path, "w", encoding="utf-8") as f:
                 json.dump(self._installed, f, indent=2)
         except Exception as e:
             logger.warning(f"MCP config save failed: {e}")
@@ -273,13 +272,14 @@ class MCPManager:
     def _load(self) -> None:
         try:
             if os.path.exists(self._persistence_path):
-                with open(self._persistence_path) as f:
+                with open(self._persistence_path, encoding="utf-8") as f:
                     self._installed = json.load(f)
         except Exception:
             self._installed = {}
 
 
 _mcp_mgr: Optional[MCPManager] = None
+
 
 def get_mcp_manager() -> MCPManager:
     global _mcp_mgr

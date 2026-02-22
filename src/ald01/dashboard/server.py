@@ -29,7 +29,7 @@ from ald01.doctor.diagnostics import DoctorDiagnostics
 
 logger = logging.getLogger("ald01.dashboard")
 
-app = FastAPI(title="ALD-01 Dashboard", version="1.0.0")
+app = FastAPI(title="ALD-01 Dashboard", version="2.0.0")
 
 # CORS
 app.add_middleware(
@@ -42,6 +42,37 @@ app.add_middleware(
 # Mount static files
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
+
+# Include new API routers
+try:
+    from ald01.dashboard.api_routes import router as api_v1_router
+    app.include_router(api_v1_router)
+except Exception as e:
+    logger.warning(f"API v1 routes not loaded: {e}")
+
+try:
+    from ald01.dashboard.api_v2 import router as api_v2_router
+    app.include_router(api_v2_router)
+except Exception as e:
+    logger.warning(f"API v2 routes not loaded: {e}")
+
+try:
+    from ald01.dashboard.api_ext import router as api_ext_router
+    app.include_router(api_ext_router)
+except Exception as e:
+    logger.warning(f"API ext routes not loaded: {e}")
+
+# Voice file serving
+VOICE_DIR = os.path.join(os.path.expanduser("~"), ".ald01", "data", "temp", "voice")
+os.makedirs(VOICE_DIR, exist_ok=True)
+
+@app.get("/api/voice/{filename}")
+async def serve_voice_file(filename: str):
+    """Serve TTS voice files."""
+    fpath = os.path.join(VOICE_DIR, filename)
+    if os.path.exists(fpath):
+        return FileResponse(fpath, media_type="audio/wav")
+    raise HTTPException(404, "Voice file not found")
 
 
 # ──────────────────────────────────────────────────────────────

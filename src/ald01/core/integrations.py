@@ -10,6 +10,7 @@ import subprocess
 import asyncio
 import logging
 import json
+from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger("ald01.integrations")
@@ -42,118 +43,118 @@ class ExternalTool:
         }
 
 
-from dataclasses import dataclass, field
+
 
 # Known external tools
 KNOWN_TOOLS: Dict[str, Dict[str, str]] = {
     "opencode": {
         "display_name": "OpenCode",
-        "icon": "🔮",
+        "icon": "wand-2",
         "description": "AI-powered code editor and assistant",
         "command": "opencode",
         "category": "ai",
     },
     "antigravity": {
         "display_name": "Antigravity",
-        "icon": "🚀",
+        "icon": "rocket",
         "description": "Advanced AI coding assistant by Google DeepMind",
         "command": "antigravity",
         "category": "ai",
     },
     "kilocli": {
         "display_name": "KiloCLI",
-        "icon": "⚡",
+        "icon": "zap",
         "description": "Fast AI CLI assistant",
         "command": "kilo",
         "category": "ai",
     },
     "cline": {
         "display_name": "Cline CLI",
-        "icon": "🤖",
+        "icon": "bot",
         "description": "Autonomous AI coding agent in terminal",
         "command": "cline",
         "category": "ai",
     },
     "blender": {
         "display_name": "Blender",
-        "icon": "🎨",
+        "icon": "palette",
         "description": "3D creation suite with Python scripting",
         "command": "blender",
         "category": "creative",
     },
     "ollama": {
         "display_name": "Ollama",
-        "icon": "🦙",
+        "icon": "cpu",
         "description": "Local LLM runner",
         "command": "ollama",
         "category": "ai",
     },
     "docker": {
         "display_name": "Docker",
-        "icon": "🐳",
+        "icon": "container",
         "description": "Container runtime",
         "command": "docker",
         "category": "dev",
     },
     "git": {
         "display_name": "Git",
-        "icon": "📦",
+        "icon": "git-branch",
         "description": "Version control system",
         "command": "git",
         "category": "dev",
     },
     "node": {
         "display_name": "Node.js",
-        "icon": "🟢",
+        "icon": "hexagon",
         "description": "JavaScript runtime",
         "command": "node",
         "category": "dev",
     },
     "python": {
         "display_name": "Python",
-        "icon": "🐍",
+        "icon": "code",
         "description": "Python interpreter",
         "command": "python",
         "category": "dev",
     },
     "code": {
         "display_name": "VS Code",
-        "icon": "💻",
+        "icon": "monitor",
         "description": "Visual Studio Code editor",
         "command": "code",
         "category": "dev",
     },
     "cursor": {
         "display_name": "Cursor",
-        "icon": "🖱️",
+        "icon": "mouse-pointer",
         "description": "AI-first code editor",
         "command": "cursor",
         "category": "ai",
     },
     "windsurf": {
         "display_name": "Windsurf",
-        "icon": "🏄",
+        "icon": "wind",
         "description": "AI-powered code editor",
         "command": "windsurf",
         "category": "ai",
     },
     "ffmpeg": {
         "display_name": "FFmpeg",
-        "icon": "🎬",
+        "icon": "film",
         "description": "Multimedia processing",
         "command": "ffmpeg",
         "category": "creative",
     },
     "npm": {
         "display_name": "npm",
-        "icon": "📦",
+        "icon": "package",
         "description": "Node package manager",
         "command": "npm",
         "category": "dev",
     },
     "pip": {
         "display_name": "pip",
-        "icon": "📦",
+        "icon": "package",
         "description": "Python package installer",
         "command": "pip",
         "category": "dev",

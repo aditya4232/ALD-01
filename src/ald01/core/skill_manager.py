@@ -19,7 +19,7 @@ logger = logging.getLogger("ald01.skills")
 BUILTIN_SKILLS = {
     "python_expert": {
         "name": "Python Expert",
-        "icon": "🐍",
+        "icon": "code",
         "description": "Advanced Python development including async, typing, testing, and optimization",
         "category": "programming",
         "level": "advanced",
@@ -32,7 +32,7 @@ BUILTIN_SKILLS = {
     },
     "javascript_fullstack": {
         "name": "JavaScript Full-Stack",
-        "icon": "🟨",
+        "icon": "file-code",
         "description": "Modern JavaScript/TypeScript with React, Node.js, and full-stack patterns",
         "category": "programming",
         "level": "advanced",
@@ -45,7 +45,7 @@ BUILTIN_SKILLS = {
     },
     "devops_master": {
         "name": "DevOps Master",
-        "icon": "⚙️",
+        "icon": "settings",
         "description": "Docker, Kubernetes, CI/CD, Terraform, and infrastructure automation",
         "category": "infrastructure",
         "level": "advanced",
@@ -58,7 +58,7 @@ BUILTIN_SKILLS = {
     },
     "security_analyst": {
         "name": "Security Analyst",
-        "icon": "🔒",
+        "icon": "shield",
         "description": "Application security, vulnerability scanning, threat modeling, OWASP Top 10",
         "category": "security",
         "level": "advanced",
@@ -71,7 +71,7 @@ BUILTIN_SKILLS = {
     },
     "database_architect": {
         "name": "Database Architect",
-        "icon": "🗃️",
+        "icon": "database",
         "description": "SQL/NoSQL design, query optimization, migrations, and data modeling",
         "category": "data",
         "level": "advanced",
@@ -84,7 +84,7 @@ BUILTIN_SKILLS = {
     },
     "ml_engineer": {
         "name": "ML Engineer",
-        "icon": "🧠",
+        "icon": "brain",
         "description": "Machine learning, deep learning, NLP, computer vision, and model deployment",
         "category": "ai",
         "level": "expert",
@@ -97,7 +97,7 @@ BUILTIN_SKILLS = {
     },
     "api_designer": {
         "name": "API Designer",
-        "icon": "🔌",
+        "icon": "plug",
         "description": "REST, GraphQL, gRPC API design with OpenAPI documentation",
         "category": "architecture",
         "level": "advanced",
@@ -110,7 +110,7 @@ BUILTIN_SKILLS = {
     },
     "cloud_architect": {
         "name": "Cloud Architect",
-        "icon": "☁️",
+        "icon": "cloud",
         "description": "AWS, Azure, GCP architecture and cloud-native patterns",
         "category": "infrastructure",
         "level": "expert",
@@ -123,7 +123,7 @@ BUILTIN_SKILLS = {
     },
     "technical_writer": {
         "name": "Technical Writer",
-        "icon": "✍️",
+        "icon": "pen-tool",
         "description": "Documentation, README, API docs, tutorials, and technical blogging",
         "category": "documentation",
         "level": "intermediate",
@@ -136,7 +136,7 @@ BUILTIN_SKILLS = {
     },
     "system_admin": {
         "name": "System Admin",
-        "icon": "🖥️",
+        "icon": "monitor",
         "description": "Linux administration, networking, monitoring, and automation",
         "category": "infrastructure",
         "level": "advanced",
@@ -149,7 +149,7 @@ BUILTIN_SKILLS = {
     },
     "mobile_developer": {
         "name": "Mobile Developer",
-        "icon": "📱",
+        "icon": "smartphone",
         "description": "Flutter, React Native, iOS (Swift), and Android (Kotlin) development",
         "category": "programming",
         "level": "advanced",
@@ -162,7 +162,7 @@ BUILTIN_SKILLS = {
     },
     "data_analyst": {
         "name": "Data Analyst",
-        "icon": "📊",
+        "icon": "bar-chart-2",
         "description": "Data analysis with Python, pandas, SQL, and visualization",
         "category": "data",
         "level": "intermediate",
@@ -175,7 +175,7 @@ BUILTIN_SKILLS = {
     },
     "hindi_support": {
         "name": "Hindi/Hinglish Support",
-        "icon": "🇮🇳",
+        "icon": "languages",
         "description": "Respond in Hindi or Hinglish, understand Indian context and culture",
         "category": "language",
         "level": "intermediate",
@@ -188,7 +188,7 @@ BUILTIN_SKILLS = {
     },
     "code_reviewer": {
         "name": "Code Reviewer",
-        "icon": "🔍",
+        "icon": "search",
         "description": "In-depth code review with security, performance, and style analysis",
         "category": "quality",
         "level": "advanced",
@@ -201,7 +201,7 @@ BUILTIN_SKILLS = {
     },
     "prompt_engineer": {
         "name": "Prompt Engineer",
-        "icon": "💬",
+        "icon": "message-square",
         "description": "Craft effective prompts for LLMs, optimize AI outputs",
         "category": "ai",
         "level": "intermediate",
@@ -324,7 +324,7 @@ class SkillManager:
     def _save(self) -> None:
         try:
             os.makedirs(os.path.dirname(self._persistence_path), exist_ok=True)
-            with open(self._persistence_path, "w") as f:
+            with open(self._persistence_path, "w", encoding="utf-8") as f:
                 json.dump(self._installed_skills, f, indent=2)
         except Exception as e:
             logger.warning(f"Skill save failed: {e}")
@@ -332,7 +332,7 @@ class SkillManager:
     def _load(self) -> None:
         try:
             if os.path.exists(self._persistence_path):
-                with open(self._persistence_path) as f:
+                with open(self._persistence_path, encoding="utf-8") as f:
                     self._installed_skills = json.load(f)
         except Exception:
             self._installed_skills = {}
