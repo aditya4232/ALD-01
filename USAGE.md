@@ -1,5 +1,9 @@
 ALD-01 — Quick Usage
 
+Version: v1.0.0 (ALD-01)
+
+This repository contains ALD-01 LLM (v1.0.0) — a small instruction-tuned bilingual model (English/Hindi) produced by QLoRA + LoRA adapter merge. The merged HF model is available after running the merge step at `outputs/ald01-merged`.
+
 - Pull latest repo:
 
   ```bash
