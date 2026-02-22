@@ -11,7 +11,7 @@ tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL, trust_remote_code=True)
 model = AutoModelForCausalLM.from_pretrained(
     BASE_MODEL,
     torch_dtype   = torch.float16,
-    device_map    = "cpu",          # CPU merge → safer for low VRAM
+    device_map    = "cpu",
     trust_remote_code = True,
 )
 

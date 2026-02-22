@@ -100,6 +100,7 @@ trainer = SFTTrainer(
 )
 
 trainer.train()
-trainer.model.save_pretrained(OUTPUT_DIR)
+# Save only the LoRA adapter (PEFT) — not the full merged model
+model.save_pretrained(OUTPUT_DIR)
 tokenizer.save_pretrained(OUTPUT_DIR)
 print(f"LoRA adapter saved to: {OUTPUT_DIR}")
