@@ -1,0 +1,16 @@
+# ALD-01 Core Dependencies
+click>=8.1
+rich>=13.0
+httpx>=0.25
+fastapi>=0.100
+uvicorn>=0.23
+websockets>=12.0
+pyyaml>=6.0
+psutil>=5.9
+python-dotenv>=1.0
+prompt_toolkit>=3.0
+jinja2>=3.1
+
+# Optional: Voice/TTS (install for voice support)
+# pip install edge-tts       # Free Microsoft Neural TTS (recommended)
+# pip install pyttsx3         # Offline TTS (fallback)

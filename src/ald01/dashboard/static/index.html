@@ -1,0 +1,1441 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ALD-01 — Advanced Local Desktop Intelligence</title>
+    <meta
+      name="description"
+      content="ALD-01 Dashboard — Monitor, control, and interact with your personal AI agent"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-primary: #0a0e17;
+        --bg-secondary: #111827;
+        --bg-card: #1a2235;
+        --bg-hover: #1e293b;
+        --bg-input: #0f172a;
+        --border: #1e3a5f;
+        --border-glow: #3b82f6;
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --text-dim: #64748b;
+        --accent: #3b82f6;
+        --accent-hover: #60a5fa;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --purple: #8b5cf6;
+        --cyan: #06b6d4;
+        --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+        --gradient-3: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+        --glass: rgba(255, 255, 255, 0.03);
+        --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+        --radius: 12px;
+        --radius-sm: 8px;
+        --font: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        font-size: 14px;
+      }
+      body {
+        font-family: var(--font);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent);
+      }
+
+      /* Layout */
+      .app {
+        display: flex;
+        height: 100vh;
+      }
+      .sidebar {
+        width: 260px;
+        min-width: 260px;
+        background: var(--bg-secondary);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s;
+      }
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* Sidebar */
+      .logo {
+        padding: 20px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--gradient-2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 16px;
+        color: white;
+        box-shadow: var(--shadow-glow);
+      }
+      .logo-text h1 {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+      .logo-text span {
+        font-size: 11px;
+        color: var(--text-dim);
+      }
+
+      .nav {
+        flex: 1;
+        padding: 12px 8px;
+        overflow-y: auto;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        color: var(--text-secondary);
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.2s;
+        margin-bottom: 2px;
+        user-select: none;
+      }
+      .nav-item:hover {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+      }
+      .nav-item.active {
+        background: rgba(59, 130, 246, 0.15);
+        color: var(--accent);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+      }
+      .nav-item .icon {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+      }
+      .nav-section {
+        padding: 8px 12px;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-dim);
+        margin-top: 8px;
+      }
+
+      .sidebar-footer {
+        padding: 12px 16px;
+        border-top: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--text-dim);
+      }
+      .status-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+        animation: pulse 2s infinite;
+      }
+      .status-dot.online {
+        background: var(--success);
+      }
+      .status-dot.offline {
+        background: var(--danger);
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Header */
+      .header {
+        height: 56px;
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        background: var(--bg-secondary);
+        border-bottom: 1px solid var(--border);
+      }
+      .header-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 8px 16px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-primary);
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .btn:hover {
+        border-color: var(--accent);
+        background: var(--bg-hover);
+      }
+      .btn-primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+      .btn-sm {
+        padding: 5px 10px;
+        font-size: 12px;
+      }
+
+      /* Cards */
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        transition: border-color 0.3s;
+      }
+      .card:hover {
+        border-color: rgba(59, 130, 246, 0.3);
+      }
+      .card-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .card-body {
+        padding: 18px;
+      }
+
+      /* Content Area */
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      /* Grid */
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      /* Stats */
+      .stat {
+        text-align: center;
+        padding: 20px;
+      }
+      .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        background: var(--gradient-2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: var(--text-dim);
+        margin-top: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* Chat */
+      .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .chat-message {
+        max-width: 80%;
+        padding: 14px 18px;
+        border-radius: var(--radius);
+        font-size: 14px;
+        line-height: 1.6;
+        animation: fadeInUp 0.3s ease;
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .chat-message.user {
+        align-self: flex-end;
+        background: var(--accent);
+        color: white;
+        border-bottom-right-radius: 4px;
+      }
+      .chat-message.assistant {
+        align-self: flex-start;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-bottom-left-radius: 4px;
+      }
+      .chat-message .meta {
+        font-size: 11px;
+        color: var(--text-dim);
+        margin-top: 6px;
+      }
+      .chat-input-area {
+        padding: 16px 20px;
+        border-top: 1px solid var(--border);
+        background: var(--bg-secondary);
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+      }
+      .chat-input {
+        flex: 1;
+        padding: 12px 16px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text-primary);
+        font-family: var(--font);
+        font-size: 14px;
+        resize: none;
+        outline: none;
+        min-height: 44px;
+        max-height: 140px;
+        transition: border-color 0.2s;
+      }
+      .chat-input:focus {
+        border-color: var(--accent);
+        box-shadow: var(--shadow-glow);
+      }
+      .chat-input::placeholder {
+        color: var(--text-dim);
+      }
+
+      /* Activity Visualizer */
+      .activity-feed {
+        max-height: 400px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        background: var(--glass);
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        animation: fadeInUp 0.3s;
+        border-left: 3px solid transparent;
+      }
+      .activity-item.agent {
+        border-left-color: var(--purple);
+      }
+      .activity-item.provider {
+        border-left-color: var(--cyan);
+      }
+      .activity-item.tool {
+        border-left-color: var(--success);
+      }
+      .activity-item.system {
+        border-left-color: var(--warning);
+      }
+      .activity-item.error {
+        border-left-color: var(--danger);
+      }
+      .activity-time {
+        color: var(--text-dim);
+        font-family: var(--mono);
+        font-size: 11px;
+        min-width: 60px;
+      }
+      .activity-type {
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        min-width: 60px;
+        text-align: center;
+      }
+      .activity-type.agent {
+        background: rgba(139, 92, 246, 0.2);
+        color: var(--purple);
+      }
+      .activity-type.provider {
+        background: rgba(6, 182, 212, 0.2);
+        color: var(--cyan);
+      }
+      .activity-type.tool {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success);
+      }
+      .activity-type.system {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--warning);
+      }
+
+      /* Sandbox Editor */
+      .editor-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .editor-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        background: var(--bg-secondary);
+        border-bottom: 1px solid var(--border);
+      }
+      .editor-area {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+      }
+      .editor-pane,
+      .output-pane {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .editor-pane {
+        border-right: 1px solid var(--border);
+      }
+      .code-editor {
+        flex: 1;
+        padding: 16px;
+        background: var(--bg-input);
+        color: var(--text-primary);
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.6;
+        border: none;
+        outline: none;
+        resize: none;
+        tab-size: 4;
+      }
+      .output-content {
+        flex: 1;
+        padding: 16px;
+        font-family: var(--mono);
+        font-size: 13px;
+        background: var(--bg-primary);
+        color: var(--success);
+        overflow-y: auto;
+        white-space: pre-wrap;
+      }
+      .pane-header {
+        padding: 8px 16px;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      /* Provider status badges */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 100px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .badge-success {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+      }
+      .badge-warning {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--warning);
+      }
+      .badge-danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+      }
+
+      /* Provider card */
+      .provider-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .provider-card:last-child {
+        border-bottom: none;
+      }
+      .provider-name {
+        font-weight: 600;
+        font-size: 13px;
+      }
+      .provider-model {
+        font-size: 11px;
+        color: var(--text-dim);
+      }
+
+      /* Thinking visualizer */
+      .thinking-container {
+        padding: 16px;
+        background: rgba(139, 92, 246, 0.05);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: var(--radius);
+        margin-bottom: 16px;
+      }
+      .thinking-step {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 6px 0;
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .thinking-dot {
+        width: 8px;
+        height: 8px;
+        margin-top: 4px;
+        border-radius: 50%;
+        background: var(--purple);
+        flex-shrink: 0;
+      }
+
+      /* File browser */
+      .file-list {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      .file-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: background 0.15s;
+        font-size: 13px;
+      }
+      .file-item:hover {
+        background: var(--bg-hover);
+      }
+      .file-icon {
+        width: 20px;
+        text-align: center;
+      }
+
+      /* Hide/show sections */
+      .page {
+        display: none;
+        height: 100%;
+      }
+      .page.active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 60px;
+          min-width: 60px;
+        }
+        .logo-text,
+        .nav-item span,
+        .nav-section,
+        .sidebar-footer span {
+          display: none;
+        }
+        .nav-item {
+          justify-content: center;
+          padding: 12px;
+        }
+        .grid-4,
+        .grid-3 {
+          grid-template-columns: 1fr 1fr;
+        }
+        .editor-area {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo">
+          <div class="logo-icon">AI</div>
+          <div class="logo-text">
+            <h1>ALD-01</h1>
+            <span>v1.0.0</span>
+          </div>
+        </div>
+        <div class="nav">
+          <div class="nav-section">Main</div>
+          <div
+            class="nav-item active"
+            data-page="dashboard"
+            onclick="showPage('dashboard')"
+          >
+            <span class="icon">📊</span><span>Dashboard</span>
+          </div>
+          <div class="nav-item" data-page="chat" onclick="showPage('chat')">
+            <span class="icon">💬</span><span>Chat</span>
+          </div>
+          <div
+            class="nav-item"
+            data-page="sandbox"
+            onclick="showPage('sandbox')"
+          >
+            <span class="icon">🧪</span><span>Sandbox</span>
+          </div>
+          <div class="nav-section">Monitor</div>
+          <div
+            class="nav-item"
+            data-page="activity"
+            onclick="showPage('activity')"
+          >
+            <span class="icon">⚡</span><span>Activity</span>
+          </div>
+          <div
+            class="nav-item"
+            data-page="providers"
+            onclick="showPage('providers')"
+          >
+            <span class="icon">🔌</span><span>Providers</span>
+          </div>
+          <div class="nav-item" data-page="agents" onclick="showPage('agents')">
+            <span class="icon">🤖</span><span>Agents</span>
+          </div>
+          <div class="nav-section">System</div>
+          <div class="nav-item" data-page="files" onclick="showPage('files')">
+            <span class="icon">📁</span><span>Files</span>
+          </div>
+          <div
+            class="nav-item"
+            data-page="terminal"
+            onclick="showPage('terminal')"
+          >
+            <span class="icon">🖥️</span><span>Terminal</span>
+          </div>
+          <div class="nav-item" data-page="doctor" onclick="showPage('doctor')">
+            <span class="icon">🩺</span><span>Doctor</span>
+          </div>
+        </div>
+        <div class="sidebar-footer">
+          <span class="status-dot online" id="wsStatus"></span>
+          <span id="wsStatusText">Connected</span>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main">
+        <div class="header">
+          <div class="header-title" id="pageTitle">Dashboard</div>
+          <div class="header-actions">
+            <select
+              id="brainPower"
+              class="btn btn-sm"
+              onchange="setBrainPower(this.value)"
+            >
+              <option value="3">🧠 Level 3</option>
+              <option value="5" selected>🧠 Level 5</option>
+              <option value="7">🧠 Level 7</option>
+              <option value="10">🧠 Level 10</option>
+            </select>
+            <button class="btn btn-sm" onclick="loadStatus()">
+              🔄 Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div class="page active" id="page-dashboard">
+          <div class="content">
+            <div class="grid grid-4" id="statsGrid">
+              <div class="card">
+                <div class="stat">
+                  <div class="stat-value" id="statUptime">0m</div>
+                  <div class="stat-label">Uptime</div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="stat">
+                  <div class="stat-value" id="statRequests">0</div>
+                  <div class="stat-label">Requests</div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="stat">
+                  <div class="stat-value" id="statProviders">0</div>
+                  <div class="stat-label">Providers</div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="stat">
+                  <div class="stat-value" id="statMessages">0</div>
+                  <div class="stat-label">Messages</div>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-2" style="margin-top: 16px">
+              <div class="card">
+                <div class="card-header">⚡ Live Activity</div>
+                <div class="card-body">
+                  <div class="activity-feed" id="activityFeed">
+                    <div
+                      style="
+                        color: var(--text-dim);
+                        text-align: center;
+                        padding: 20px;
+                      "
+                    >
+                      Waiting for activity...
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">🤖 Agent Status</div>
+                <div class="card-body" id="agentStatusList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Page -->
+        <div class="page" id="page-chat">
+          <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+              <div class="chat-message assistant">
+                <div>
+                  Hello! I'm ALD-01, your personal AI assistant. How can I help
+                  you?
+                </div>
+                <div class="meta">general • ready</div>
+              </div>
+            </div>
+            <div class="chat-input-area">
+              <textarea
+                class="chat-input"
+                id="chatInput"
+                placeholder="Type your message... (Enter to send, Shift+Enter for newline)"
+                rows="1"
+                onkeydown="
+                  if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    sendChat();
+                  }
+                "
+              ></textarea>
+              <button class="btn btn-primary" onclick="sendChat()">
+                Send →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sandbox Page -->
+        <div class="page" id="page-sandbox">
+          <div class="editor-container">
+            <div class="editor-toolbar">
+              <button class="btn btn-primary btn-sm" onclick="runSandbox()">
+                ▶ Run
+              </button>
+              <button class="btn btn-sm" onclick="clearSandbox()">
+                🗑 Clear
+              </button>
+              <button class="btn btn-sm" onclick="exportSandbox()">
+                📥 Export
+              </button>
+              <select id="sandboxLang" class="btn btn-sm">
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="html">HTML</option>
+              </select>
+              <span style="flex: 1"></span>
+              <span
+                id="sandboxStatus"
+                style="font-size: 12px; color: var(--text-dim)"
+                >Ready</span
+              >
+            </div>
+            <div class="editor-area">
+              <div class="editor-pane">
+                <div class="pane-header"><span>Code</span></div>
+                <textarea
+                  class="code-editor"
+                  id="codeEditor"
+                  spellcheck="false"
+                  placeholder="# Write your code here..."
+                >
+# Hello from ALD-01!
+print("Hello, world!")
+
+for i in range(5):
+    print(f"  Step {i+1}: Processing...")
+
+print("Done!")</textarea
+                >
+              </div>
+              <div class="output-pane">
+                <div class="pane-header">
+                  <span>Output</span
+                  ><button
+                    class="btn btn-sm"
+                    onclick="
+                      document.getElementById('outputContent').textContent = ''
+                    "
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div class="output-content" id="outputContent">
+                  Click "Run" to execute code...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Page -->
+        <div class="page" id="page-activity">
+          <div class="content">
+            <div class="card">
+              <div class="card-header">
+                ⚡ Full Activity Log<button
+                  class="btn btn-sm"
+                  onclick="loadActivity()"
+                >
+                  Refresh
+                </button>
+              </div>
+              <div class="card-body">
+                <div
+                  class="activity-feed"
+                  id="fullActivityFeed"
+                  style="max-height: 600px"
+                ></div>
+              </div>
+            </div>
+            <div class="card" style="margin-top: 16px">
+              <div class="card-header">🧠 AI Decisions</div>
+              <div class="card-body" id="decisionsLog"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Providers Page -->
+        <div class="page" id="page-providers">
+          <div class="content">
+            <div class="card">
+              <div class="card-header">
+                🔌 Active Providers<button
+                  class="btn btn-sm"
+                  onclick="testProviders()"
+                >
+                  Test All
+                </button>
+              </div>
+              <div class="card-body" id="providersList"></div>
+            </div>
+            <div class="card" style="margin-top: 16px">
+              <div class="card-header">✨ Available Free Providers</div>
+              <div class="card-body" id="freeProvidersList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agents Page -->
+        <div class="page" id="page-agents">
+          <div class="content">
+            <div class="grid grid-2" id="agentCards"></div>
+          </div>
+        </div>
+
+        <!-- Files Page -->
+        <div class="page" id="page-files">
+          <div class="content">
+            <div class="card">
+              <div class="card-header">
+                📁 File Browser
+                <div style="display: flex; gap: 8px">
+                  <input
+                    type="text"
+                    id="filePath"
+                    class="chat-input"
+                    style="min-height: 32px; font-size: 12px; width: 300px"
+                    value="~"
+                    onkeydown="if (event.key === 'Enter') browseFiles();"
+                  />
+                  <button class="btn btn-sm" onclick="browseFiles()">Go</button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="file-list" id="fileList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal Page -->
+        <div class="page" id="page-terminal">
+          <div class="content">
+            <div class="card" style="height: 100%">
+              <div class="card-header">🖥️ Terminal</div>
+              <div
+                class="card-body"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  height: calc(100% - 50px);
+                "
+              >
+                <div
+                  class="output-content"
+                  id="terminalOutput"
+                  style="flex: 1; margin-bottom: 12px"
+                >
+                  $ Ready. Type a command below.
+                </div>
+                <div style="display: flex; gap: 8px">
+                  <input
+                    type="text"
+                    id="terminalInput"
+                    class="chat-input"
+                    style="min-height: 36px"
+                    placeholder="Enter command..."
+                    onkeydown="if (event.key === 'Enter') runTerminal();"
+                  />
+                  <button
+                    class="btn btn-primary btn-sm"
+                    onclick="runTerminal()"
+                  >
+                    Run
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Doctor Page -->
+        <div class="page" id="page-doctor">
+          <div class="content">
+            <div class="card">
+              <div class="card-header">
+                🩺 System Diagnostics<button
+                  class="btn btn-primary btn-sm"
+                  onclick="runDoctor()"
+                >
+                  Run Check
+                </button>
+              </div>
+              <div class="card-body" id="doctorResults">
+                <p style="color: var(--text-dim)">
+                  Click "Run Check" to diagnose your system.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API = "";
+      let ws = null;
+      let conversationId = null;
+
+      // ── Page Navigation ──
+      function showPage(page) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((n) => n.classList.remove("active"));
+        document.getElementById(`page-${page}`).classList.add("active");
+        document.querySelector(`[data-page="${page}"]`).classList.add("active");
+        document.getElementById("pageTitle").textContent =
+          page.charAt(0).toUpperCase() + page.slice(1);
+
+        // Load data for page
+        if (page === "providers") {
+          loadProviders();
+          loadFreeProviders();
+        }
+        if (page === "agents") loadAgents();
+        if (page === "activity") {
+          loadActivity();
+          loadDecisions();
+        }
+        if (page === "doctor") {
+        }
+        if (page === "files") browseFiles();
+      }
+
+      // ── WebSocket ──
+      function connectWS() {
+        const proto = location.protocol === "https:" ? "wss" : "ws";
+        ws = new WebSocket(`${proto}://${location.host}/ws`);
+        ws.onopen = () => {
+          setWSStatus(true);
+        };
+        ws.onclose = () => {
+          setWSStatus(false);
+          setTimeout(connectWS, 3000);
+        };
+        ws.onerror = () => {
+          setWSStatus(false);
+        };
+        ws.onmessage = (e) => {
+          try {
+            const event = JSON.parse(e.data);
+            if (event.type !== "heartbeat") addActivityItem(event);
+          } catch (err) {}
+        };
+      }
+      function setWSStatus(online) {
+        const dot = document.getElementById("wsStatus");
+        const text = document.getElementById("wsStatusText");
+        dot.className = `status-dot ${online ? "online" : "offline"}`;
+        text.textContent = online ? "Connected" : "Reconnecting...";
+      }
+
+      // ── API Helpers ──
+      async function api(path, opts = {}) {
+        const resp = await fetch(API + path, {
+          headers: { "Content-Type": "application/json" },
+          ...opts,
+        });
+        return resp.json();
+      }
+
+      // ── Status ──
+      async function loadStatus() {
+        try {
+          const s = await api("/api/status");
+          document.getElementById("statUptime").textContent =
+            s.uptime_human || "0m";
+          document.getElementById("statRequests").textContent =
+            s.total_requests || 0;
+          document.getElementById("statProviders").textContent =
+            `${s.providers?.online_providers || 0}/${s.providers?.total_providers || 0}`;
+          document.getElementById("statMessages").textContent =
+            s.memory?.messages || 0;
+          document.getElementById("brainPower").value = s.brain_power || 5;
+
+          // Agent status
+          const agentEl = document.getElementById("agentStatusList");
+          if (s.agents) {
+            agentEl.innerHTML = Object.values(s.agents)
+              .map(
+                (a) => `
+                <div class="provider-card">
+                    <div><div class="provider-name">${a.display_name}</div><div class="provider-model">${a.expertise}</div></div>
+                    <span class="badge ${a.enabled ? "badge-success" : "badge-danger"}">${a.enabled ? "● Active" : "○ Disabled"}</span>
+                </div>`,
+              )
+              .join("");
+          }
+        } catch (e) {
+          console.error("Status error:", e);
+        }
+      }
+
+      // ── Chat ──
+      async function sendChat() {
+        const input = document.getElementById("chatInput");
+        const query = input.value.trim();
+        if (!query) return;
+        input.value = "";
+
+        const messagesEl = document.getElementById("chatMessages");
+        messagesEl.innerHTML += `<div class="chat-message user"><div>${escHtml(query)}</div></div>`;
+
+        const thinkingEl = document.createElement("div");
+        thinkingEl.className = "chat-message assistant";
+        thinkingEl.innerHTML =
+          '<div class="thinking-container"><div class="thinking-step"><div class="thinking-dot"></div>Thinking...</div></div>';
+        messagesEl.appendChild(thinkingEl);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        try {
+          const data = await api("/api/chat", {
+            method: "POST",
+            body: JSON.stringify({ query, conversation_id: conversationId }),
+          });
+
+          if (data.metadata?.conversation_id)
+            conversationId = data.metadata.conversation_id;
+
+          thinkingEl.innerHTML = `<div>${formatContent(data.content)}</div><div class="meta">${data.agent || ""} • ${data.model || ""} • ${Math.round(data.latency_ms || 0)}ms</div>`;
+        } catch (e) {
+          thinkingEl.innerHTML = `<div style="color:var(--danger)">Error: ${e.message}</div>`;
+        }
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      // ── Sandbox ──
+      async function runSandbox() {
+        const code = document.getElementById("codeEditor").value;
+        const output = document.getElementById("outputContent");
+        const status = document.getElementById("sandboxStatus");
+
+        status.textContent = "Running...";
+        output.textContent = "⏳ Executing...\n";
+
+        try {
+          const data = await api("/api/sandbox/run", {
+            method: "POST",
+            body: JSON.stringify({ code }),
+          });
+          if (data.success) {
+            output.textContent = data.output?.stdout || "No output";
+            if (data.output?.stderr)
+              output.textContent += "\n--- STDERR ---\n" + data.output.stderr;
+            status.textContent = `✓ Done (${Math.round(data.duration_ms)}ms)`;
+          } else {
+            output.textContent =
+              "❌ Error:\n" +
+              (data.output?.stderr || data.error || "Unknown error");
+            status.textContent = "Error";
+          }
+        } catch (e) {
+          output.textContent = "❌ " + e.message;
+          status.textContent = "Error";
+        }
+      }
+      function clearSandbox() {
+        document.getElementById("codeEditor").value = "";
+        document.getElementById("outputContent").textContent = "";
+      }
+      function exportSandbox() {
+        const code = document.getElementById("codeEditor").value;
+        const lang = document.getElementById("sandboxLang").value;
+        const ext =
+          { python: ".py", javascript: ".js", html: ".html" }[lang] || ".txt";
+        const blob = new Blob([code], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `ald01_sandbox${ext}`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      // ── Providers ──
+      async function loadProviders() {
+        const data = await api("/api/providers");
+        const el = document.getElementById("providersList");
+        if (data.providers) {
+          el.innerHTML = Object.entries(data.providers)
+            .map(
+              ([name, p]) => `
+            <div class="provider-card">
+                <div><div class="provider-name">${name}</div><div class="provider-model">${p.models?.[0] || "N/A"}</div></div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    ${p.online ? `<span style="font-size:11px;color:var(--text-dim)">${Math.round(p.latency_ms)}ms</span>` : ""}
+                    <span class="badge ${p.online ? "badge-success" : "badge-danger"}">${p.online ? "● Online" : "○ Offline"}</span>
+                </div>
+            </div>`,
+            )
+            .join("");
+        } else
+          el.innerHTML = '<p style="color:var(--text-dim)">No providers</p>';
+      }
+      async function loadFreeProviders() {
+        const data = await api("/api/providers/free");
+        const el = document.getElementById("freeProvidersList");
+        el.innerHTML = data
+          .filter((p) => p.free_tier)
+          .map(
+            (p) => `
+        <div class="provider-card">
+            <div><div class="provider-name">${p.name}</div><div class="provider-model">${p.default_model}</div></div>
+            <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:11px;color:var(--text-dim)">${p.env_key}</span>
+                <span class="badge ${p.configured ? "badge-success" : "badge-warning"}">${p.configured ? "✓ Set" : "Not Set"}</span>
+            </div>
+        </div>`,
+          )
+          .join("");
+      }
+      async function testProviders() {
+        await api("/api/providers/test", { method: "POST" });
+        loadProviders();
+      }
+
+      // ── Agents ──
+      async function loadAgents() {
+        const data = await api("/api/agents");
+        const el = document.getElementById("agentCards");
+        el.innerHTML = Object.entries(data)
+          .map(
+            ([name, a]) => `
+        <div class="card">
+            <div class="card-header">${a.display_name}<span class="badge ${a.enabled ? "badge-success" : "badge-danger"}">${a.status}</span></div>
+            <div class="card-body">
+                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:12px">${a.expertise}</p>
+                <div style="display:flex;gap:16px">
+                    <div><div style="font-size:20px;font-weight:700">${a.tasks_completed}</div><div style="font-size:11px;color:var(--text-dim)">Tasks</div></div>
+                    <div><div style="font-size:20px;font-weight:700">${Math.round(a.avg_latency_ms)}ms</div><div style="font-size:11px;color:var(--text-dim)">Avg Latency</div></div>
+                </div>
+            </div>
+        </div>`,
+          )
+          .join("");
+      }
+
+      // ── Activity ──
+      function addActivityItem(event) {
+        const feed = document.getElementById("activityFeed");
+        const cat = (event.type || "").split(".")[0] || "system";
+        const time = new Date().toLocaleTimeString().slice(0, 5);
+        const item = document.createElement("div");
+        item.className = `activity-item ${cat}`;
+        item.innerHTML = `<span class="activity-time">${time}</span><span class="activity-type ${cat}">${cat}</span><span>${event.type}: ${JSON.stringify(event.data || {}).slice(0, 80)}</span>`;
+        feed.prepend(item);
+        while (feed.children.length > 50) feed.removeChild(feed.lastChild);
+      }
+      async function loadActivity() {
+        const data = await api("/api/activity");
+        const el = document.getElementById("fullActivityFeed");
+        if (Array.isArray(data)) {
+          el.innerHTML = data
+            .reverse()
+            .map(
+              (a) => `
+            <div class="activity-item ${a.type || "system"}">
+                <span class="activity-time">${new Date(a.timestamp * 1000).toLocaleTimeString()}</span>
+                <span>${a.query || a.type || ""}</span>
+                <span class="badge badge-success">${a.status || ""}</span>
+            </div>`,
+            )
+            .join("");
+        }
+      }
+      async function loadDecisions() {
+        const data = await api("/api/decisions");
+        const el = document.getElementById("decisionsLog");
+        if (Array.isArray(data)) {
+          el.innerHTML = data
+            .map(
+              (d) => `
+            <div class="activity-item system">
+                <span class="activity-time">${new Date(d.timestamp * 1000).toLocaleTimeString()}</span>
+                <span><strong>${d.decision_type}:</strong> ${d.decision}</span>
+            </div>`,
+            )
+            .join("");
+        }
+      }
+
+      // ── Files ──
+      async function browseFiles() {
+        const path = document.getElementById("filePath").value || "~";
+        const data = await api("/api/files/list", {
+          method: "POST",
+          body: JSON.stringify({ path }),
+        });
+        const el = document.getElementById("fileList");
+        if (data.success && Array.isArray(data.output)) {
+          el.innerHTML = data.output
+            .map(
+              (f) => `
+            <div class="file-item" onclick="${f.type === "dir" ? `document.getElementById('filePath').value='${path}/${f.name}';browseFiles()` : ""}">
+                <span class="file-icon">${f.type === "dir" ? "📁" : "📄"}</span>
+                <span style="flex:1">${f.name}</span>
+                <span style="font-size:11px;color:var(--text-dim)">${f.type === "file" ? formatSize(f.size) : ""}</span>
+            </div>`,
+            )
+            .join("");
+        } else
+          el.innerHTML = `<p style="color:var(--danger)">${data.error || "Error"}</p>`;
+      }
+
+      // ── Terminal ──
+      async function runTerminal() {
+        const input = document.getElementById("terminalInput");
+        const out = document.getElementById("terminalOutput");
+        const cmd = input.value.trim();
+        if (!cmd) return;
+        input.value = "";
+        out.textContent += `\n$ ${cmd}\n`;
+        const data = await api("/api/terminal/run", {
+          method: "POST",
+          body: JSON.stringify({ command: cmd }),
+        });
+        out.textContent +=
+          (data.output?.stdout || "") +
+          (data.output?.stderr || data.error || "") +
+          "\n";
+        out.scrollTop = out.scrollHeight;
+      }
+
+      // ── Doctor ──
+      async function runDoctor() {
+        const el = document.getElementById("doctorResults");
+        el.innerHTML =
+          '<p style="color:var(--text-dim)">Running diagnostics...</p>';
+        const data = await api("/api/doctor");
+        if (data.results) {
+          el.innerHTML = data.results
+            .map((r) => {
+              const color = {
+                pass: "var(--success)",
+                warn: "var(--warning)",
+                fail: "var(--danger)",
+              }[r.status];
+              const icon = { pass: "✓", warn: "⚠", fail: "✗" }[r.status];
+              return `<div class="activity-item ${r.status === "fail" ? "error" : r.status === "warn" ? "system" : "tool"}" style="margin-bottom:4px">
+                <span style="color:${color};font-weight:700;min-width:20px">${icon}</span>
+                <span style="font-weight:600;min-width:150px">${r.name}</span>
+                <span>${r.message}</span>
+            </div>`;
+            })
+            .join("");
+          const s = data;
+          el.innerHTML += `<div style="margin-top:16px;padding:12px;border-top:1px solid var(--border)">
+            <strong>${s.healthy ? "✅ System Healthy" : "⚠️ Issues Found"}</strong> — 
+            Passed: ${s.passed} | Warnings: ${s.warnings} | Failed: ${s.failed}
+        </div>`;
+        }
+      }
+
+      // ── Brain Power ──
+      async function setBrainPower(level) {
+        await api(`/api/brain-power/${level}`, { method: "POST" });
+      }
+
+      // ── Helpers ──
+      function escHtml(s) {
+        const d = document.createElement("div");
+        d.textContent = s;
+        return d.innerHTML;
+      }
+      function formatContent(s) {
+        return escHtml(s)
+          .replace(/\n/g, "<br>")
+          .replace(
+            /```([\s\S]*?)```/g,
+            '<pre style="background:var(--bg-input);padding:12px;border-radius:8px;overflow-x:auto;margin:8px 0">$1</pre>',
+          );
+      }
+      function formatSize(b) {
+        const u = ["B", "KB", "MB", "GB"];
+        let i = 0;
+        while (b >= 1024 && i < u.length - 1) {
+          b /= 1024;
+          i++;
+        }
+        return `${b.toFixed(i ? 1 : 0)} ${u[i]}`;
+      }
+
+      // ── Init ──
+      document.addEventListener("DOMContentLoaded", () => {
+        connectWS();
+        loadStatus();
+        setInterval(loadStatus, 15000);
+      });
+    </script>
+  </body>
+</html>
