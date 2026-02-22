@@ -1,0 +1,9 @@
+outputs/
+__pycache__/
+*.pyc
+.env
+*.gguf
+*.bin
+*.safetensors
+*.pt
+.DS_Store

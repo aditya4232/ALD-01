@@ -1,4 +1,3 @@
-import os
 import torch
 from datasets import load_dataset
 from transformers import (
@@ -34,6 +33,7 @@ TRAIN_ARGS = dict(
     save_total_limit        = 2,
     fp16                    = not torch.cuda.is_bf16_supported(),
     bf16                    = torch.cuda.is_bf16_supported(),
+    gradient_checkpointing  = True,
     optim                   = "paged_adamw_8bit",
     report_to               = "none",
 )
