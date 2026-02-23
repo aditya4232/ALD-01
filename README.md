@@ -3,252 +3,245 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/license-MIT-00C853?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/version-1.0.0-FF6D00?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/agents-5-7C4DFF?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/providers-10%2B-00BCD4?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/modules-40%2B-E91E63?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/node-16%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node" />
+  <img src="https://img.shields.io/badge/license-MIT-00C853?style=for-the-badge" alt="License" />
+  <img src="https://img.shields.io/badge/version-1.0.0-FF6D00?style=for-the-badge" alt="Version" />
 </p>
 
 <p align="center">
-  <a href="https://github.com/aditya4232/ALD-01"><img src="https://img.shields.io/github/stars/aditya4232/ALD-01?style=social" /></a>
-  <a href="https://github.com/aditya4232/ALD-01/issues"><img src="https://img.shields.io/github/issues/aditya4232/ALD-01?color=yellow" /></a>
-  <a href="https://github.com/aditya4232/ALD-01/fork"><img src="https://img.shields.io/github/forks/aditya4232/ALD-01?style=social" /></a>
+  <img src="https://img.shields.io/npm/v/ald-01?style=flat-square&logo=npm&label=npm" alt="npm" />
+  <img src="https://img.shields.io/pypi/v/ald-01?style=flat-square&logo=pypi&label=pypi" alt="pypi" />
+  <a href="https://github.com/aditya4232/ALD-01/stargazers"><img src="https://img.shields.io/github/stars/aditya4232/ALD-01?style=flat-square&logo=github" alt="Stars" /></a>
+  <a href="https://github.com/aditya4232/ALD-01/issues"><img src="https://img.shields.io/github/issues/aditya4232/ALD-01?style=flat-square&logo=github&color=yellow" alt="Issues" /></a>
+  <a href="https://github.com/aditya4232/ALD-01/fork"><img src="https://img.shields.io/github/forks/aditya4232/ALD-01?style=flat-square&logo=github" alt="Forks" /></a>
 </p>
 
 ---
 
-**ALD-01** is a fully open-source, privacy-first AI agent system that runs **locally on your desktop**. It combines 10+ free AI providers, 5 specialized agents, advanced reasoning strategies, a professional web dashboard, and full device access — all in a single `pip install`.
+**ALD-01** is a fully open-source, privacy-first AI agent system that runs **locally on your desktop**. It combines 10+ free AI providers, 5 specialized agents, advanced reasoning strategies, a professional web dashboard, and full device access — all in a single install.
 
-> 🧠 Think of it as **your own local, open-source AI assistant** — with the power of commercial tools, but free, private, and fully under your control.
+> Think of it as **your own local, open-source AI assistant** — with the power of commercial tools, but free, private, and fully under your control.
 
 ---
 
-## 🚀 Quick Start
+## <img src="https://img.shields.io/badge/-Quick%20Start-0078D4?style=flat-square&logo=rocket&logoColor=white" height="25" alt="Quick Start" />
 
 ### Prerequisites
 
-- **Python 3.10+** — [Download Python](https://www.python.org/downloads/)
-- **pip** (comes with Python)
-- At least one AI provider API key, **or** [Ollama](https://ollama.ai) for fully local/offline use
+- **Python 3.10+** — [python.org/downloads](https://www.python.org/downloads/)
+- **Node.js 16+** *(optional, for npm install)* — [nodejs.org](https://nodejs.org/)
 
-### Install from PyPI (Global Command)
+### Install via npm (recommended)
+
+```bash
+npm install -g ald-01
+```
+
+> Installs the `ald-01` global command. On first run, it auto-detects Python and installs all Python dependencies for you.
+
+### Install via pip
 
 ```bash
 pip install ald-01
 ```
 
-> After installing, the **`ald-01`** command is available globally from any terminal.
-
-### Install from Source (Developers)
+### Install from Source
 
 ```bash
-# Clone the repository
 git clone https://github.com/aditya4232/ALD-01.git
 cd ALD-01
 
-# Install in editable mode (recommended for development)
+# Editable install (dev)
 pip install -e .
 
-# Or install with voice support
+# With voice support
 pip install -e ".[voice]"
 
-# Or install with dev tools (pytest, black, ruff)
+# With dev tools (pytest, ruff, black)
 pip install -e ".[dev]"
 ```
 
-### Verify Installation
+### Verify
 
 ```bash
-# Check if ald-01 is available globally
 ald-01 --help
-
-# Alternative command (same thing)
-ald01 --help
 ```
 
 ### First Run
 
 ```bash
-# Run the interactive setup wizard
-ald-01 setup
-
-# Or jump straight into chat
-ald-01 chat
-
-# Launch the web dashboard
-ald-01 dashboard
+ald-01 setup          # Interactive setup wizard
+ald-01 chat           # Start chatting
+ald-01 dashboard      # Launch web UI
 ```
 
 ### Set Up a Free Provider
 
 ```bash
-# Option 1: Groq (fastest, generous free tier)
-# Get your key from https://console.groq.com
-export GROQ_API_KEY=gsk_your_key_here        # Linux/Mac
-set GROQ_API_KEY=gsk_your_key_here           # Windows CMD
-$env:GROQ_API_KEY="gsk_your_key_here"        # Windows PowerShell
+# Groq — fastest, generous free tier (console.groq.com)
+export GROQ_API_KEY=gsk_your_key_here          # Linux / Mac
+set GROQ_API_KEY=gsk_your_key_here             # Windows CMD
+$env:GROQ_API_KEY="gsk_your_key_here"          # PowerShell
 
-# Option 2: Cerebras
-export CEREBRAS_API_KEY=your_key_here         # https://cloud.cerebras.ai
+# Cerebras (cloud.cerebras.ai)
+export CEREBRAS_API_KEY=your_key_here
 
-# Option 3: Fully local with Ollama (no API key needed)
-# Install from https://ollama.ai, then:
+# Fully local — no key needed (ollama.ai)
 ollama pull llama3.2
 
-# Verify your providers
+# Check what's available
 ald-01 provider list
 ```
 
 ---
 
-## ✨ Features
+## <img src="https://img.shields.io/badge/-Features-7C4DFF?style=flat-square&logo=sparkles&logoColor=white" height="25" alt="Features" />
 
-### 🤖 Multi-Agent System
+### <img src="https://img.shields.io/badge/-Multi--Agent%20System-blue?style=flat-square&logo=robot&logoColor=white" height="20" alt="Agents" />
 
-| Agent | Specialty | Example Use |
-|-------|-----------|-------------|
-| **Code Gen** | Code generation & scaffolding | "Write a REST API in FastAPI" |
-| **Debug** | Debugging & error resolution | "Fix this TypeError in my code" |
-| **Review** | Code review & best practices | "Review this function for issues" |
-| **Security** | Security analysis & hardening | "Check this code for vulnerabilities" |
-| **General** | General Q&A & reasoning | "Explain decorators in Python" |
+| Agent | Specialty | Example |
+|:------|:----------|:--------|
+| **Code Gen** | Code generation and scaffolding | *"Write a REST API in FastAPI"* |
+| **Debug** | Debugging and error resolution | *"Fix this TypeError in my code"* |
+| **Review** | Code review and best practices | *"Review this function for issues"* |
+| **Security** | Security analysis and hardening | *"Check this endpoint for vulns"* |
+| **General** | General Q&A and reasoning | *"Explain decorators in Python"* |
 
-- **Automatic Agent Routing** — Queries are intelligently routed to the best agent
-- **10 Brain Power Levels** — From basic Q&A to full AGI-like autonomous reasoning
+- Automatic agent routing — queries go to the best agent
+- 10 brain power levels — from basic Q&A to full autonomous reasoning
 
-### 🔌 10+ AI Providers (All Free Tiers)
+### <img src="https://img.shields.io/badge/-10%2B%20AI%20Providers-00BCD4?style=flat-square&logo=openai&logoColor=white" height="20" alt="Providers" />
 
-| Provider | Model | Free Tier | Speed |
-|----------|-------|-----------|-------|
-| **Groq** | Llama 3.3 70B | ✅ Generous | ⚡ Ultra-fast |
-| **Cerebras** | Llama 3.3 70B | ✅ | ⚡ Fast |
-| **OpenRouter** | Various | ✅ | ⚡ |
-| **Together AI** | Mixtral | ✅ | ⚡ |
-| **GitHub Copilot** | GPT-4.1 | ✅ Pro users | ⚡ |
-| **Google Gemini** | Gemini 2.0 | ✅ | ⚡ |
-| **SambaNova** | Llama 3.1 | ✅ | ⚡ |
-| **Novita AI** | Llama 3 | ✅ | ⚡ |
-| **Hyperbolic** | Deepseek R1 | ✅ | ⚡ |
-| **Ollama** | Any local model | ✅ Fully local | Depends on HW |
+All providers below offer **free tiers** — no credit card required.
 
-- **Automatic failover** — If one provider fails, the next one picks up instantly
-- **Priority routing** — You choose which provider gets tried first
-- **Provider benchmarking** — Built-in latency & quality scoring
+| Provider | Model | Notes |
+|:---------|:------|:------|
+| **Groq** | Llama 3.3 70B | Ultra-fast inference, generous free tier |
+| **Cerebras** | Llama 3.3 70B | High throughput |
+| **OpenRouter** | Various | Aggregator, many free models |
+| **Together AI** | Mixtral | Free tier available |
+| **GitHub Copilot** | GPT-4.1 | Free for Pro users |
+| **Google Gemini** | Gemini 2.0 | Google's latest |
+| **SambaNova** | Llama 3.1 | Free tier |
+| **Novita AI** | Llama 3 | Free tier |
+| **Hyperbolic** | Deepseek R1 | Free tier |
+| **Ollama** | Any local model | 100% offline, no API key |
 
-### 🧠 Advanced Reasoning Engine
+Built-in **automatic failover** — if one provider drops, the next one picks up.
 
-- **Chain-of-Thought** — Step-by-step logical reasoning
-- **Tree-of-Thought** — Multi-branch problem exploration
-- **Reflexion** — Self-correcting iterative refinement
-- **Problem Decomposition** — Complex task breakdown into subtasks
-- Reasoning depth scales automatically with brain power level (1–10)
+### <img src="https://img.shields.io/badge/-Advanced%20Reasoning-FF6D00?style=flat-square&logo=brain&logoColor=white" height="20" alt="Reasoning" />
 
-### 🖥️ Professional Web Dashboard
+- **Chain-of-Thought** — step-by-step logical reasoning
+- **Tree-of-Thought** — multi-branch problem exploration
+- **Reflexion** — self-correcting iterative refinement
+- **Problem Decomposition** — complex task breakdown into subtasks
+- Depth scales automatically with brain power level (1–10)
 
-- **Glassmorphism dark UI** with modern aesthetics
-- **Real-time Activity Visualizer** via WebSocket
-- **Chat Interface** with streaming responses
-- **Sandbox Code Editor** with Python execution & export
-- **File Browser** for full filesystem navigation
-- **Terminal** for direct command execution
-- **System Monitor** with live process listing
-- **Doctor Diagnostics** with 12+ health checks
-- **Provider Management** with one-click testing
+### <img src="https://img.shields.io/badge/-Web%20Dashboard-E91E63?style=flat-square&logo=googlechrome&logoColor=white" height="20" alt="Dashboard" />
 
-### 🔧 Full Device Access (40+ Integrated Modules)
+- Glassmorphism dark UI with modern aesthetics
+- Real-time activity visualizer via WebSocket
+- Chat interface with streaming responses
+- Sandbox code editor with Python execution and export
+- File browser for full filesystem navigation
+- Terminal for direct command execution
+- System monitor with live process listing
+- Doctor diagnostics with 12+ health checks
+- Provider management with one-click testing
+
+### <img src="https://img.shields.io/badge/-Device%20Access%20(40%2B%20Modules)-4CAF50?style=flat-square&logo=chip&logoColor=white" height="20" alt="Modules" />
 
 | Category | Capabilities |
-|----------|-------------|
+|:---------|:-------------|
 | **Filesystem** | Read, write, search, delete, move files |
 | **Terminal** | Execute shell commands |
 | **Code Sandbox** | Run Python in isolated subprocess |
 | **System Info** | CPU, RAM, disk, GPU detection |
-| **Process Mgmt** | List & manage running processes |
-| **Clipboard** | Read and write clipboard content |
-| **HTTP Requests** | Make web requests |
-| **File Watcher** | Monitor files for changes in real-time |
-| **Backup Manager** | Create & restore backups |
-| **Analytics** | Usage analytics & insights |
-| **Task Scheduler** | Schedule recurring tasks |
-| **Export System** | Export data in multiple formats |
+| **Process Mgmt** | List and manage running processes |
+| **Clipboard** | Read and write clipboard |
+| **HTTP** | Make web requests |
+| **File Watcher** | Monitor files for real-time changes |
+| **Backup** | Create and restore backups |
+| **Analytics** | Usage analytics and insights |
+| **Scheduler** | Schedule recurring tasks |
+| **Export** | Export data (JSON, CSV, etc.) |
 | **Webhooks** | Event-driven webhook system |
 | **Code Analyzer** | Static code analysis |
-| **API Gateway** | Built-in API gateway |
-| **Session Manager** | Multi-session management |
-| **Template Engine** | Jinja2-powered templating |
-| **Plugin System** | Extensible plugin architecture |
+| **API Gateway** | Built-in gateway |
+| **Sessions** | Multi-session management |
+| **Templates** | Jinja2-powered templating |
+| **Plugins** | Extensible plugin architecture |
 | **Themes** | Customizable UI themes |
-| **Localization** | Multi-language support (i18n) |
+| **i18n** | Multi-language support |
 
-### 🔊 Voice / Text-to-Speech
+### <img src="https://img.shields.io/badge/-Voice%20%2F%20TTS-9C27B0?style=flat-square&logo=speakerdeck&logoColor=white" height="20" alt="Voice" />
 
-- **Edge TTS** — Free Microsoft Neural voices (50+ voices, high quality)
-- **pyttsx3** — Offline TTS fallback
+- **Edge TTS** — free Microsoft Neural voices (50+ voices, high quality)
+- **pyttsx3** — offline TTS fallback
 - **System TTS** — OS-native speech (Windows, macOS, Linux)
 
-### 📱 Remote Access
+### <img src="https://img.shields.io/badge/-Remote%20Access-009688?style=flat-square&logo=telegram&logoColor=white" height="20" alt="Telegram" />
 
-- **Telegram Bot** — Control ALD-01 from your phone
+- **Telegram Bot** — control ALD-01 from your phone
 - Ask questions, check status, change settings remotely
 
-### 💾 Persistent Memory
+### <img src="https://img.shields.io/badge/-Persistent%20Memory-607D8B?style=flat-square&logo=databricks&logoColor=white" height="20" alt="Memory" />
 
-- **SQLite-backed** conversation & knowledge storage
-- **Semantic memory** — Facts, preferences, patterns
-- **Decision logs** — Track AI reasoning over time
-- **User profile** — Personalized experience
-- **Context manager** — Intelligent conversation context
+- **SQLite-backed** conversation and knowledge storage
+- **Semantic memory** — facts, preferences, patterns
+- **Decision logs** — track AI reasoning over time
+- **User profile** — personalized experience
+- **Context manager** — intelligent conversation context
 
 ---
 
-## 📖 Usage
+## <img src="https://img.shields.io/badge/-Usage-2196F3?style=flat-square&logo=windowsterminal&logoColor=white" height="25" alt="Usage" />
 
 ### CLI Commands
 
 ```bash
-# ─── Chat ─────────────────────────────────────────
+# Chat
 ald-01 chat                         # Interactive chat
-ald-01 chat --agent security        # Chat with a specific agent
-ald-01 chat --voice                 # Chat with voice output
+ald-01 chat --agent security        # Specific agent
+ald-01 chat --voice                 # With voice output
 ald-01 chat --stream                # Stream responses
 
-# ─── Quick Question ───────────────────────────────
+# Quick question
 ald-01 ask "How do I reverse a linked list in Python?"
 
-# ─── Dashboard ────────────────────────────────────
-ald-01 dashboard                    # Launch web dashboard (default: localhost:7860)
+# Dashboard
+ald-01 dashboard                    # Default: localhost:7860
 ald-01 dashboard --port 8080        # Custom port
 
-# ─── System ───────────────────────────────────────
-ald-01 status                       # System status overview
-ald-01 doctor                       # Full diagnostic health check
-ald-01 setup                        # Run the setup wizard
+# System
+ald-01 status                       # System status
+ald-01 doctor                       # Full health check
+ald-01 setup                        # Setup wizard
 
-# ─── Providers ────────────────────────────────────
-ald-01 provider list                # Show all providers & status
-ald-01 provider free                # Show free provider options
-ald-01 provider add groq            # Add a provider interactively
+# Providers
+ald-01 provider list                # All providers
+ald-01 provider free                # Free options
+ald-01 provider add groq            # Add interactively
 
-# ─── Configuration ────────────────────────────────
-ald-01 config show                  # Show current config
-ald-01 config set brain_power 7     # Set brain power level
-ald-01 config reset                 # Reset to defaults
+# Config
+ald-01 config show                  # Current config
+ald-01 config set brain_power 7     # Set brain power
+ald-01 config reset                 # Reset defaults
 
-# ─── Voice ────────────────────────────────────────
+# Voice
 ald-01 voice test                   # Test TTS
-ald-01 voice voices                 # List available voices
+ald-01 voice voices                 # List voices
 ```
 
 ### In-Chat Commands
 
-```
+```text
 /exit    — Exit chat
 /clear   — Clear conversation history
 /agent   — Switch agent (code_gen, debug, review, security, general)
 /voice   — Toggle voice on/off
-/status  — Show system status
+/status  — System status
 ```
 
 ### Python API
@@ -282,17 +275,20 @@ asyncio.run(main())
 
 ---
 
-## 🏗️ Architecture
+## <img src="https://img.shields.io/badge/-Architecture-795548?style=flat-square&logo=files&logoColor=white" height="25" alt="Architecture" />
 
-```
+```text
 ALD-01/
+├── bin/cli.js                    # npm global CLI wrapper
+├── package.json                  # npm package config
+│
 ├── src/ald01/
 │   ├── __init__.py               # Package init & directory setup
 │   ├── __main__.py               # python -m ald01 entry point
 │   ├── cli.py                    # Click CLI (all commands)
 │   ├── config.py                 # YAML config with brain power presets
 │   │
-│   ├── core/                     # ⚙️  Core Systems (40+ modules)
+│   ├── core/                     # Core Systems (40+ modules)
 │   │   ├── orchestrator.py       # Central coordinator
 │   │   ├── brain.py              # AI brain & decision engine
 │   │   ├── chat_engine.py        # Chat processing engine
@@ -300,43 +296,25 @@ ALD-01/
 │   │   ├── memory.py             # SQLite persistent memory
 │   │   ├── tools.py              # Tool executor (fs, terminal, etc.)
 │   │   ├── events.py             # Async pub-sub event bus
-│   │   ├── context_manager.py    # Conversation context management
+│   │   ├── context_manager.py    # Conversation context
 │   │   ├── pipeline.py           # Processing pipeline
-│   │   ├── modes.py              # Operating modes
-│   │   ├── tasks.py              # Task management
-│   │   ├── scheduler.py          # Task scheduler
-│   │   ├── worker.py             # Background workers
 │   │   ├── plugins.py            # Plugin system
-│   │   ├── skill_manager.py      # Skill management
-│   │   ├── subagents.py          # Sub-agent orchestration
-│   │   ├── multi_model.py        # Multi-model coordination
+│   │   ├── scheduler.py          # Task scheduler
 │   │   ├── analytics.py          # Usage analytics
 │   │   ├── backup_manager.py     # Backup & restore
-│   │   ├── code_analyzer.py      # Static code analysis
-│   │   ├── executor.py           # Command executor
-│   │   ├── export_system.py      # Data export (JSON, CSV, etc.)
-│   │   ├── file_watcher.py       # Real-time file monitoring
+│   │   ├── code_analyzer.py      # Static analysis
+│   │   ├── export_system.py      # Data export
+│   │   ├── file_watcher.py       # File monitoring
 │   │   ├── gateway.py            # API gateway
 │   │   ├── webhooks.py           # Webhook engine
 │   │   ├── session_manager.py    # Session management
 │   │   ├── template_engine.py    # Jinja2 templating
-│   │   ├── themes.py             # UI theme engine
-│   │   ├── localization.py       # i18n / multi-language
-│   │   ├── integrations.py       # Third-party integrations
-│   │   ├── learning.py           # Adaptive learning
-│   │   ├── mcp_manager.py        # MCP protocol manager
+│   │   ├── themes.py             # Theme engine
+│   │   ├── localization.py       # i18n
 │   │   ├── self_heal.py          # Self-healing & recovery
-│   │   ├── prompt_library.py     # Prompt templates
-│   │   ├── notifications.py      # Notification system
-│   │   ├── logging_config.py     # Structured logging
-│   │   ├── validator.py          # Input validation
-│   │   ├── revert.py             # Undo/revert system
-│   │   ├── status.py             # System status engine
-│   │   ├── config_editor.py      # Config editor
-│   │   ├── data_manager.py       # Data management
-│   │   └── autostart.py          # Auto-start configuration
+│   │   └── ...                   # 20+ more modules
 │   │
-│   ├── agents/                   # 🤖 Specialized AI Agents
+│   ├── agents/                   # Specialized AI Agents
 │   │   ├── base.py               # Base agent class
 │   │   ├── codegen.py            # Code generation
 │   │   ├── debug.py              # Debugging
@@ -344,52 +322,37 @@ ALD-01/
 │   │   ├── security.py           # Security analysis
 │   │   └── general.py            # General purpose
 │   │
-│   ├── providers/                # 🔌 AI Model Providers
-│   │   ├── base.py               # Abstract provider interface
-│   │   ├── openai_compat.py      # Universal OpenAI-compatible
-│   │   ├── ollama.py             # Local Ollama provider
-│   │   ├── manager.py            # Provider routing & failover
-│   │   └── benchmark.py          # Provider benchmarking
+│   ├── providers/                # AI Model Providers
+│   │   ├── base.py               # Abstract provider
+│   │   ├── openai_compat.py      # OpenAI-compatible
+│   │   ├── ollama.py             # Local Ollama
+│   │   ├── manager.py            # Routing & failover
+│   │   └── benchmark.py          # Benchmarking
 │   │
-│   ├── dashboard/                # 🖥️  Web Dashboard
-│   │   ├── server.py             # FastAPI + WebSocket server
-│   │   ├── api_routes.py         # REST API routes
-│   │   ├── api_v2.py             # API v2 endpoints
-│   │   ├── api_ext.py            # Extended API endpoints
-│   │   └── static/               # Frontend assets
-│   │       ├── index.html        # Dashboard UI
-│   │       ├── app.js            # Frontend logic
-│   │       └── styles.css        # Styles
+│   ├── dashboard/                # Web Dashboard
+│   │   ├── server.py             # FastAPI + WebSocket
+│   │   ├── api_routes.py         # REST API v1
+│   │   ├── api_v2.py             # REST API v2
+│   │   ├── api_ext.py            # Extended endpoints
+│   │   └── static/               # Frontend (HTML/JS/CSS)
 │   │
-│   ├── services/                 # 🔊 Optional Services
-│   │   └── voice.py              # Text-to-Speech engine
-│   │
-│   ├── doctor/                   # 🩺 Diagnostics
-│   │   └── diagnostics.py        # 12+ health checks
-│   │
-│   ├── visualization/            # 📊 Visualization
-│   │   └── thinking.py           # Rich terminal thinking UI
-│   │
-│   ├── telegram/                 # 📱 Remote Access
-│   │   └── bot.py                # Telegram bot
-│   │
-│   ├── onboarding/               # 🎓 First-Time Setup
-│   │   └── wizard.py             # Interactive setup wizard
-│   │
-│   └── utils/                    # 🔨 Utilities
-│       └── hardware.py           # Hardware detection & GPU
+│   ├── services/voice.py         # TTS engine
+│   ├── doctor/diagnostics.py     # Health checks
+│   ├── telegram/bot.py           # Telegram bot
+│   ├── onboarding/wizard.py      # Setup wizard
+│   └── utils/hardware.py         # Hardware detection
 │
-├── pyproject.toml                # Package configuration
-├── requirements.txt              # Dependencies
-├── LICENSE                       # MIT License
-└── README.md                     # This file
+├── pyproject.toml                # Python package config
+├── requirements.txt              # pip dependencies
+├── LICENSE                       # MIT
+└── README.md
 ```
 
 ---
 
-## ⚙️ Configuration
+## <img src="https://img.shields.io/badge/-Configuration-F57C00?style=flat-square&logo=gear&logoColor=white" height="25" alt="Config" />
 
-Configuration is stored in `~/.ald01/config.yaml`. Key settings:
+Stored in `~/.ald01/config.yaml`:
 
 ```yaml
 brain_power: 5              # 1–10, controls reasoning depth
@@ -397,7 +360,7 @@ brain_power: 5              # 1–10, controls reasoning depth
 providers:
   groq:
     enabled: true
-    priority: 1              # Lower = higher priority
+    priority: 1              # Lower = tried first
   ollama:
     enabled: true
     host: http://localhost:11434
@@ -412,143 +375,132 @@ voice:
 
 tools:
   terminal:
-    enabled: false           # Enable shell command execution
+    enabled: false           # Shell command execution
   code_execute:
-    enabled: false           # Enable Python sandbox
+    enabled: false           # Python sandbox
 
 telegram:
-  token: ""                  # Telegram bot token
-  allowed_users: []          # List of authorized user IDs
+  token: ""
+  allowed_users: []
 ```
 
 ---
 
-## 🧠 Brain Power Levels
+## <img src="https://img.shields.io/badge/-Brain%20Power%20Levels-6A1B9A?style=flat-square&logo=zap&logoColor=white" height="25" alt="Brain Power" />
 
-| Level | Name | Reasoning Depth | Autonomous | Best For |
-|-------|------|:---------------:|:----------:|----------|
-| 1 | **Basic** | 1 | ❌ | Simple Q&A |
-| 2 | **Simple** | 2 | ❌ | Quick answers with reasoning |
-| 3 | **Moderate** | 3 | ❌ | Step-by-step explanations |
-| 4 | **Standard** | 4 | ❌ | Multi-step problem solving |
-| 5 | **Advanced** | 5 | ⚡ Limited | Complex analysis |
-| 6 | **Deep** | 6 | ⚡ Limited | Multi-perspective evaluation |
-| 7 | **Expert** | 7 | ✅ | Expert-level reasoning |
-| 8 | **Master** | 8 | ✅ | Deep research & synthesis |
-| 9 | **Genius** | 9 | ✅ | Multi-strategy reasoning |
-| 10 | **AGI** | 10 | ✅ | Full autonomous reasoning |
+| Level | Name | Depth | Autonomous | Best For |
+|:-----:|:-----|:-----:|:----------:|:---------|
+| 1 | **Basic** | 1 | No | Simple Q&A |
+| 2 | **Simple** | 2 | No | Quick answers |
+| 3 | **Moderate** | 3 | No | Step-by-step explanations |
+| 4 | **Standard** | 4 | No | Multi-step problem solving |
+| 5 | **Advanced** | 5 | Limited | Complex analysis |
+| 6 | **Deep** | 6 | Limited | Multi-perspective evaluation |
+| 7 | **Expert** | 7 | Yes | Expert-level reasoning |
+| 8 | **Master** | 8 | Yes | Deep research & synthesis |
+| 9 | **Genius** | 9 | Yes | Multi-strategy reasoning |
+| 10 | **AGI** | 10 | Yes | Full autonomous reasoning |
 
 ```bash
-# Set your brain power level
 ald-01 config set brain_power 7
 ```
 
 ---
 
-## 🩺 Doctor Diagnostics
+## <img src="https://img.shields.io/badge/-Doctor%20Diagnostics-43A047?style=flat-square&logo=stethoscope&logoColor=white" height="25" alt="Doctor" />
 
-Run `ald-01 doctor` to perform a full system health check:
+Run `ald-01 doctor` to check:
 
-- ✅ Python version compatibility
-- ✅ Required & optional dependencies
-- ✅ Config file validity
-- ✅ Data directory permissions
-- ✅ Memory database health
-- ✅ Dashboard port availability
-- ✅ System resources (RAM, disk)
-- ✅ Internet connectivity
-- ✅ Ollama availability
-- ✅ Provider connections
-- ✅ Free API key configuration
-- ✅ Voice/TTS engine availability
-
----
-
-## 🔒 Privacy & Security
-
-| Feature | Details |
-|---------|---------|
-| **Fully Local** | Can run 100% offline with Ollama |
-| **No Telemetry** | Zero data sent without your consent |
-| **API Keys** | Stored as env vars, never in code |
-| **Tool Access** | Configurable — enable only what you need |
-| **Sandbox** | Code execution runs in isolated subprocess |
-| **Open Source** | Full code transparency |
+| Check | Details |
+|:------|:--------|
+| Python version | 3.10+ compatibility |
+| Dependencies | Required and optional packages |
+| Config file | YAML validity |
+| Data directory | Permissions |
+| Memory database | SQLite health |
+| Dashboard port | Availability |
+| System resources | RAM, disk space |
+| Connectivity | Internet access |
+| Ollama | Local model availability |
+| Providers | API connections |
+| API keys | Free tier configuration |
+| Voice/TTS | Engine availability |
 
 ---
 
-## 📦 Dependencies
+## <img src="https://img.shields.io/badge/-Privacy%20%26%20Security-D32F2F?style=flat-square&logo=shield&logoColor=white" height="25" alt="Security" />
 
-### Required (auto-installed)
+| Principle | Details |
+|:----------|:--------|
+| **Fully local** | Runs 100% offline with Ollama |
+| **No telemetry** | Zero data sent without consent |
+| **API keys** | Stored as env vars, never in code |
+| **Tool access** | Configurable — enable only what you need |
+| **Sandbox** | Code execution in isolated subprocess |
+| **Open source** | Full code transparency |
+
+---
+
+## <img src="https://img.shields.io/badge/-Dependencies-1565C0?style=flat-square&logo=python&logoColor=white" height="25" alt="Deps" />
+
+### Core (auto-installed)
 
 | Package | Purpose |
-|---------|---------|
+|:--------|:--------|
 | `click` | CLI framework |
-| `rich` | Beautiful terminal UI |
+| `rich` | Terminal UI |
 | `httpx` | Async HTTP client |
-| `fastapi` | Web dashboard & API server |
+| `fastapi` | Web dashboard & API |
 | `uvicorn` | ASGI server |
 | `websockets` | Real-time communication |
-| `pyyaml` | Configuration parsing |
+| `pyyaml` | Config parsing |
 | `psutil` | System monitoring |
-| `python-dotenv` | Environment variable management |
-| `prompt_toolkit` | Interactive terminal input |
+| `python-dotenv` | Environment variables |
+| `prompt_toolkit` | Interactive input |
 | `jinja2` | Template engine |
 | `aiosqlite` | Async SQLite |
 
 ### Optional
 
 ```bash
-# Voice / TTS support
-pip install ald-01[voice]
-
-# Development tools
-pip install ald-01[dev]
+pip install ald-01[voice]       # Edge TTS + pyttsx3
+pip install ald-01[dev]         # pytest, black, ruff
 ```
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Here's how to get started:
+## <img src="https://img.shields.io/badge/-Contributing-00897B?style=flat-square&logo=git&logoColor=white" height="25" alt="Contributing" />
 
 ```bash
-# 1. Fork & clone
+# Fork & clone
 git clone https://github.com/YOUR_USERNAME/ALD-01.git
 cd ALD-01
 
-# 2. Install in dev mode
+# Install dev mode
 pip install -e ".[dev]"
 
-# 3. Create a feature branch
+# Feature branch
 git checkout -b feature/awesome-feature
 
-# 4. Make your changes & run tests
+# Test
 pytest
 
-# 5. Submit a pull request
+# PR
 ```
 
-### Contribution Guidelines
-
-- Follow PEP 8 style (enforced by `ruff`)
-- Add docstrings to new functions and classes
-- Write tests for new features
-- Keep PRs focused and descriptive
+**Guidelines:** PEP 8 style (enforced by `ruff`) · docstrings on new functions · tests for new features · focused PRs
 
 ---
 
-## 📄 License
+## <img src="https://img.shields.io/badge/-License-37474F?style=flat-square&logo=opensourceinitiative&logoColor=white" height="25" alt="License" />
 
 MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
-## 🌟 Star History
-
 <p align="center">
   <a href="https://star-history.com/#aditya4232/ALD-01&Date">
-    <img src="https://api.star-history.com/svg?repos=aditya4232/ALD-01&type=Date" width="600" alt="Star History Chart" />
+    <img src="https://api.star-history.com/svg?repos=aditya4232/ALD-01&type=Date" width="550" alt="Star History" />
   </a>
 </p>
 
@@ -557,9 +509,9 @@ MIT License — see [LICENSE](LICENSE) for details.
 <p align="center">
   <strong>ALD-01 — Your Desktop, Your Intelligence, Your Control.</strong>
   <br/><br/>
-  Made with ❤️ by <a href="https://github.com/aditya4232">Aditya Shenvi</a>
+  Made by <a href="https://github.com/aditya4232">Aditya Shenvi</a>
   <br/><br/>
-  <a href="https://github.com/aditya4232/ALD-01">⭐ Star this repo</a> •
-  <a href="https://github.com/aditya4232/ALD-01/issues">🐛 Report Bug</a> •
-  <a href="https://github.com/aditya4232/ALD-01/issues">💡 Request Feature</a>
+  <a href="https://github.com/aditya4232/ALD-01">Star this repo</a> · 
+  <a href="https://github.com/aditya4232/ALD-01/issues">Report Bug</a> · 
+  <a href="https://github.com/aditya4232/ALD-01/issues">Request Feature</a>
 </p>
