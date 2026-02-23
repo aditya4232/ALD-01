@@ -42,6 +42,7 @@ app.add_middleware(
 # Mount static files
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Include new API routers
 try:

@@ -4,6 +4,7 @@ Bridges core subsystems to the frontend: brain, scheduler, language, themes,
 data manager, autostart, multi-model, notifications, worker, status.
 """
 
+import os
 import logging
 import time
 from typing import Any, Dict
@@ -489,3 +490,559 @@ async def learned_patterns():
         return {"patterns": get_learning_system().get_patterns()}
     except Exception as e:
         return {"patterns": [], "error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# Backup Manager
+# ──────────────────────────────────────────────────────────────
+
+@router.get("/backups")
+async def list_backups():
+    try:
+        from ald01.core.backup_manager import get_backup_manager
+        return {"backups": get_backup_manager().list_backups()}
+    except Exception as e:
+        return {"backups": [], "error": str(e)}
+
+
+@router.post("/backups")
+async def create_backup(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.backup_manager import get_backup_manager
+        return get_backup_manager().create_backup(
+            backup_type=body.get("type", "full"),
+            label=body.get("label", ""),
+        )
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.post("/backups/{name}/restore")
+async def restore_backup(name: str):
+    try:
+        from ald01.core.backup_manager import get_backup_manager
+        return get_backup_manager().restore_backup(name)
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.delete("/backups/{name}")
+async def delete_backup(name: str):
+    try:
+        from ald01.core.backup_manager import get_backup_manager
+        return {"success": get_backup_manager().delete_backup(name)}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/backups/stats")
+async def backup_stats():
+    try:
+        from ald01.core.backup_manager import get_backup_manager
+        return get_backup_manager().get_stats()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# Analytics
+# ──────────────────────────────────────────────────────────────
+
+@router.get("/analytics")
+async def get_analytics():
+    try:
+        from ald01.core.analytics import get_analytics
+        return get_analytics().get_dashboard_data()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@router.get("/analytics/health")
+async def analytics_health():
+    try:
+        from ald01.core.analytics import get_analytics
+        return get_analytics().get_health_metrics()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@router.get("/analytics/costs")
+async def get_cost_summary():
+    try:
+        from ald01.core.analytics import get_analytics
+        return get_analytics().cost_tracker.get_summary(24)
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# Command Executor
+# ──────────────────────────────────────────────────────────────
+
+@router.post("/execute")
+async def execute_command(request: Request):
+    body = await request.json()
+    command = body.get("command", "")
+    if not command:
+        raise HTTPException(400, "Missing command")
+    try:
+        from ald01.core.executor import get_executor
+        result = await get_executor().execute(
+            command, cwd=body.get("cwd"),
+            timeout=body.get("timeout", 30),
+        )
+        return result.to_dict()
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/execute/history")
+async def command_history():
+    try:
+        from ald01.core.executor import get_executor
+        return {"history": get_executor().get_history()}
+    except Exception as e:
+        return {"history": [], "error": str(e)}
+
+
+@router.get("/execute/running")
+async def running_processes():
+    try:
+        from ald01.core.executor import get_executor
+        return {"processes": get_executor().get_running()}
+    except Exception as e:
+        return {"processes": [], "error": str(e)}
+
+
+@router.delete("/execute/{pid}")
+async def kill_process(pid: int):
+    try:
+        from ald01.core.executor import get_executor
+        return {"success": await get_executor().kill_process(pid)}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# Webhooks
+# ──────────────────────────────────────────────────────────────
+
+@router.get("/webhooks")
+async def list_webhooks():
+    try:
+        from ald01.core.webhooks import get_webhook_engine
+        return {"webhooks": get_webhook_engine().list_subscriptions()}
+    except Exception as e:
+        return {"webhooks": [], "error": str(e)}
+
+
+@router.post("/webhooks")
+async def register_webhook(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.webhooks import get_webhook_engine
+        return get_webhook_engine().register(
+            url=body.get("url", ""),
+            events=body.get("events", ["*"]),
+            secret=body.get("secret", ""),
+        )
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.delete("/webhooks/{webhook_id}")
+async def unregister_webhook(webhook_id: str):
+    try:
+        from ald01.core.webhooks import get_webhook_engine
+        return {"success": get_webhook_engine().unregister(webhook_id)}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/webhooks/events")
+async def webhook_events():
+    try:
+        from ald01.core.webhooks import get_webhook_engine
+        return {"events": get_webhook_engine().get_available_events()}
+    except Exception as e:
+        return {"events": [], "error": str(e)}
+
+
+@router.get("/webhooks/deliveries")
+async def webhook_deliveries():
+    try:
+        from ald01.core.webhooks import get_webhook_engine
+        return {"deliveries": get_webhook_engine().get_deliveries(50)}
+    except Exception as e:
+        return {"deliveries": [], "error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# Code Analyzer
+# ──────────────────────────────────────────────────────────────
+
+@router.post("/analyze")
+async def analyze_code(request: Request):
+    body = await request.json()
+    path = body.get("path", "")
+    if not path:
+        raise HTTPException(400, "Missing path")
+    try:
+        from ald01.core.code_analyzer import get_code_analyzer
+        analyzer = get_code_analyzer()
+        if os.path.isdir(path):
+            return analyzer.analyze_directory(path)
+        elif os.path.isfile(path):
+            return analyzer.analyze_file(path).to_dict()
+        else:
+            return {"error": f"Path not found: {path}"}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# API Gateway
+# ──────────────────────────────────────────────────────────────
+
+@router.get("/gateway/keys")
+async def list_api_keys():
+    try:
+        from ald01.core.gateway import get_api_gateway
+        return {"keys": get_api_gateway().list_keys()}
+    except Exception as e:
+        return {"keys": [], "error": str(e)}
+
+
+@router.post("/gateway/keys")
+async def create_api_key(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.gateway import get_api_gateway
+        return get_api_gateway().generate_api_key(
+            name=body.get("name", "default"),
+            permissions=body.get("permissions", ["read"]),
+            rate_limit=body.get("rate_limit", 60),
+        )
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.delete("/gateway/keys/{key_id}")
+async def delete_api_key(key_id: str):
+    try:
+        from ald01.core.gateway import get_api_gateway
+        return {"success": get_api_gateway().delete_key(key_id)}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/gateway/stats")
+async def gateway_stats():
+    try:
+        from ald01.core.gateway import get_api_gateway
+        return get_api_gateway().get_stats()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# Export System
+# ──────────────────────────────────────────────────────────────
+
+@router.get("/exports")
+async def list_exports():
+    try:
+        from ald01.core.export_system import get_export_system
+        return {"exports": get_export_system().list_exports()}
+    except Exception as e:
+        return {"exports": [], "error": str(e)}
+
+
+@router.post("/exports/conversation")
+async def export_conversation(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.export_system import get_export_system
+        return get_export_system().export_conversation(
+            messages=body.get("messages", []),
+            title=body.get("title", "Conversation"),
+            format=body.get("format", "markdown"),
+        )
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.post("/exports/status")
+async def export_status():
+    try:
+        from ald01.core.export_system import get_export_system
+        from ald01.dashboard.server import status
+        status_data = await status()
+        return get_export_system().export_status_report(status_data)
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# File Watcher
+# ──────────────────────────────────────────────────────────────
+
+@router.get("/watcher")
+async def watcher_status():
+    try:
+        from ald01.core.file_watcher import get_file_watcher
+        fw = get_file_watcher()
+        return {
+            "stats": fw.get_stats(),
+            "watched": fw.get_watched(),
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@router.get("/watcher/events")
+async def watcher_events():
+    try:
+        from ald01.core.file_watcher import get_file_watcher
+        return {"events": get_file_watcher().get_events(50)}
+    except Exception as e:
+        return {"events": [], "error": str(e)}
+
+
+@router.post("/watcher/watch")
+async def add_watch(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.file_watcher import get_file_watcher
+        result = get_file_watcher().watch(
+            directory=body.get("directory", ""),
+            label=body.get("label", ""),
+        )
+        return {"success": result}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# Session Manager
+# ──────────────────────────────────────────────────────────────
+
+@router.get("/sessions")
+async def list_sessions():
+    try:
+        from ald01.core.session_manager import get_session_manager
+        return {"sessions": get_session_manager().list_sessions()}
+    except Exception as e:
+        return {"sessions": [], "error": str(e)}
+
+
+@router.get("/preferences")
+async def get_preferences():
+    try:
+        from ald01.core.session_manager import get_session_manager
+        return get_session_manager().get_preferences()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@router.post("/preferences")
+async def update_preferences(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.session_manager import get_session_manager
+        get_session_manager().update_preferences(body)
+        return {"success": True}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# Templates
+# ──────────────────────────────────────────────────────────────
+
+@router.get("/templates")
+async def list_templates():
+    try:
+        from ald01.core.template_engine import get_template_engine
+        return {"templates": get_template_engine().list_templates()}
+    except Exception as e:
+        return {"templates": [], "error": str(e)}
+
+
+@router.post("/templates/render")
+async def render_template(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.template_engine import get_template_engine
+        return get_template_engine().render(
+            template_id=body.get("template_id", ""),
+            context=body.get("context", {}),
+        )
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.post("/templates/scaffold")
+async def scaffold_project(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.template_engine import get_template_engine
+        return get_template_engine().scaffold_project(
+            project_type=body.get("type", "python"),
+            variables=body.get("variables", {}),
+        )
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/prompts/stats")
+async def prompt_stats():
+    try:
+        from ald01.core.prompt_library import get_prompt_library
+        return get_prompt_library().get_stats()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# Pipeline Manager
+# ──────────────────────────────────────────────────────────────
+
+@router.get("/pipelines")
+async def list_pipelines():
+    try:
+        from ald01.core.pipeline import get_pipeline_manager
+        return {"pipelines": get_pipeline_manager().list_pipelines()}
+    except Exception as e:
+        return {"pipelines": [], "error": str(e)}
+
+
+@router.post("/pipelines")
+async def create_pipeline(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.pipeline import get_pipeline_manager
+        return get_pipeline_manager().create_pipeline(
+            pipeline_id=body.get("id", ""),
+            name=body.get("name", ""),
+            description=body.get("description", ""),
+            steps=body.get("steps", []),
+        )
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.post("/pipelines/{pipeline_id}/run")
+async def run_pipeline(pipeline_id: str, request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.pipeline import get_pipeline_manager
+        return await get_pipeline_manager().run(
+            pipeline_id, context=body.get("context"),
+        )
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.delete("/pipelines/{pipeline_id}")
+async def delete_pipeline(pipeline_id: str):
+    try:
+        from ald01.core.pipeline import get_pipeline_manager
+        return {"success": get_pipeline_manager().delete_pipeline(pipeline_id)}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/pipelines/templates")
+async def list_pipeline_templates():
+    try:
+        from ald01.core.pipeline import get_pipeline_manager
+        return {"templates": get_pipeline_manager().list_templates()}
+    except Exception as e:
+        return {"templates": [], "error": str(e)}
+
+
+@router.post("/pipelines/from-template/{template_id}")
+async def create_pipeline_from_template(template_id: str):
+    try:
+        from ald01.core.pipeline import get_pipeline_manager
+        return get_pipeline_manager().create_from_template(template_id)
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/pipelines/stats")
+async def pipeline_stats():
+    try:
+        from ald01.core.pipeline import get_pipeline_manager
+        return get_pipeline_manager().get_stats()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ──────────────────────────────────────────────────────────────
+# Context Manager
+# ──────────────────────────────────────────────────────────────
+
+@router.get("/context/stats")
+async def context_stats():
+    try:
+        from ald01.core.context_manager import get_context_manager
+        return get_context_manager().get_stats()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@router.post("/context/inject")
+async def inject_context(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.context_manager import get_context_manager
+        cm = get_context_manager()
+        cm.injector.set_injection(body.get("key", ""), body.get("content", ""))
+        return {"success": True}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/context/injections")
+async def list_injections():
+    try:
+        from ald01.core.context_manager import get_context_manager
+        return {"injections": get_context_manager().injector.list_injections()}
+    except Exception as e:
+        return {"injections": {}, "error": str(e)}
+
+
+@router.get("/context/memory")
+async def list_memories():
+    try:
+        from ald01.core.context_manager import get_context_manager
+        return {"memories": get_context_manager().memory.list_all()}
+    except Exception as e:
+        return {"memories": [], "error": str(e)}
+
+
+@router.post("/context/memory")
+async def add_memory(request: Request):
+    body = await request.json()
+    try:
+        from ald01.core.context_manager import get_context_manager
+        get_context_manager().memory.remember(
+            key=body.get("key", ""),
+            value=body.get("value", ""),
+            category=body.get("category", "general"),
+        )
+        return {"success": True}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/context/memory/search")
+async def search_memories(q: str = ""):
+    try:
+        from ald01.core.context_manager import get_context_manager
+        return {"results": get_context_manager().memory.search(q)}
+    except Exception as e:
+        return {"results": [], "error": str(e)}

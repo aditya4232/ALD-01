@@ -1,1493 +1,529 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ALD-01 — Advanced Local Desktop Intelligence</title>
-    <meta
-      name="description"
-      content="ALD-01 Dashboard — Monitor, control, and interact with your personal AI agent"
-    />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.460.0/font/lucide.min.css"/>
-    <style>
-      :root {
-        --bg-primary: #0a0e17;
-        --bg-secondary: #111827;
-        --bg-card: #1a2235;
-        --bg-hover: #1e293b;
-        --bg-input: #0f172a;
-        --border: #1e3a5f;
-        --border-glow: #3b82f6;
-        --text-primary: #e2e8f0;
-        --text-secondary: #94a3b8;
-        --text-dim: #64748b;
-        --accent: #3b82f6;
-        --accent-hover: #60a5fa;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --purple: #8b5cf6;
-        --cyan: #06b6d4;
-        --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --gradient-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-        --gradient-3: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
-        --glass: rgba(255, 255, 255, 0.03);
-        --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-        --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
-        --radius: 12px;
-        --radius-sm: 8px;
-        --font: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-        --mono: "JetBrains Mono", monospace;
-      }
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      html {
-        font-size: 14px;
-      }
-      body {
-        font-family: var(--font);
-        background: var(--bg-primary);
-        color: var(--text-primary);
-        min-height: 100vh;
-        overflow-x: hidden;
-      }
-      /* Scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: 3px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: var(--accent);
-      }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALD-01 | Autonomous Dev Assistant</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-      /* Layout */
-      .app {
-        display: flex;
-        height: 100vh;
-      }
-      .sidebar {
-        width: 260px;
-        min-width: 260px;
-        background: var(--bg-secondary);
-        border-right: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-        transition: all 0.3s;
-      }
-      .main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
 
-      /* Sidebar */
-      .logo {
-        padding: 20px 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        border-bottom: 1px solid var(--border);
-      }
-      .logo-icon {
-        width: 40px;
-        height: 40px;
-        background: var(--gradient-2);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 16px;
-        color: white;
-        box-shadow: var(--shadow-glow);
-      }
-      .logo-text h1 {
-        font-size: 18px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-      }
-      .logo-text span {
-        font-size: 11px;
-        color: var(--text-dim);
-      }
-
-      .nav {
-        flex: 1;
-        padding: 12px 8px;
-        overflow-y: auto;
-      }
-      .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        color: var(--text-secondary);
-        font-size: 13px;
-        font-weight: 500;
-        transition: all 0.2s;
-        margin-bottom: 2px;
-        user-select: none;
-      }
-      .nav-item:hover {
-        background: var(--bg-hover);
-        color: var(--text-primary);
-      }
-      .nav-item.active {
-        background: rgba(59, 130, 246, 0.15);
-        color: var(--accent);
-        border: 1px solid rgba(59, 130, 246, 0.2);
-      }
-      .nav-item .icon {
-        font-size: 16px;
-        width: 20px;
-        text-align: center;
-      }
-      .nav-section {
-        padding: 8px 12px;
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: var(--text-dim);
-        margin-top: 8px;
-      }
-
-      .sidebar-footer {
-        padding: 12px 16px;
-        border-top: 1px solid var(--border);
-        font-size: 11px;
-        color: var(--text-dim);
-      }
-      .status-dot {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        margin-right: 6px;
-        animation: pulse 2s infinite;
-      }
-      .status-dot.online {
-        background: var(--success);
-      }
-      .status-dot.offline {
-        background: var(--danger);
-      }
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.5;
-        }
-      }
-
-      /* Header */
-      .header {
-        height: 56px;
-        min-height: 56px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 24px;
-        background: var(--bg-secondary);
-        border-bottom: 1px solid var(--border);
-      }
-      .header-title {
-        font-size: 16px;
-        font-weight: 600;
-      }
-      .header-actions {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-
-      /* Buttons */
-      .btn {
-        padding: 8px 16px;
-        border-radius: var(--radius-sm);
-        border: 1px solid var(--border);
-        background: var(--bg-card);
-        color: var(--text-primary);
-        font-family: var(--font);
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .btn:hover {
-        border-color: var(--accent);
-        background: var(--bg-hover);
-      }
-      .btn-primary {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: white;
-      }
-      .btn-primary:hover {
-        background: var(--accent-hover);
-      }
-      .btn-sm {
-        padding: 5px 10px;
-        font-size: 12px;
-      }
-
-      /* Cards */
-      .card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        overflow: hidden;
-        transition: border-color 0.3s;
-      }
-      .card:hover {
-        border-color: rgba(59, 130, 246, 0.3);
-      }
-      .card-header {
-        padding: 14px 18px;
-        border-bottom: 1px solid var(--border);
-        font-size: 13px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .card-body {
-        padding: 18px;
-      }
-
-      /* Content Area */
-      .content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-      }
-
-      /* Grid */
-      .grid {
-        display: grid;
-        gap: 16px;
-      }
-      .grid-2 {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .grid-3 {
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .grid-4 {
-        grid-template-columns: repeat(4, 1fr);
-      }
-
-      /* Stats */
-      .stat {
-        text-align: center;
-        padding: 20px;
-      }
-      .stat-value {
-        font-size: 32px;
-        font-weight: 700;
-        background: var(--gradient-2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      .stat-label {
-        font-size: 12px;
-        color: var(--text-dim);
-        margin-top: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      /* Chat */
-      .chat-container {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
-      .chat-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-      .chat-message {
-        max-width: 80%;
-        padding: 14px 18px;
-        border-radius: var(--radius);
-        font-size: 14px;
-        line-height: 1.6;
-        animation: fadeInUp 0.3s ease;
-      }
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .chat-message.user {
-        align-self: flex-end;
-        background: var(--accent);
-        color: white;
-        border-bottom-right-radius: 4px;
-      }
-      .chat-message.assistant {
-        align-self: flex-start;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-bottom-left-radius: 4px;
-      }
-      .chat-message .meta {
-        font-size: 11px;
-        color: var(--text-dim);
-        margin-top: 6px;
-      }
-      .chat-input-area {
-        padding: 16px 20px;
-        border-top: 1px solid var(--border);
-        background: var(--bg-secondary);
-        display: flex;
-        gap: 8px;
-        align-items: flex-end;
-      }
-      .chat-input {
-        flex: 1;
-        padding: 12px 16px;
-        background: var(--bg-input);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        color: var(--text-primary);
-        font-family: var(--font);
-        font-size: 14px;
-        resize: none;
-        outline: none;
-        min-height: 44px;
-        max-height: 140px;
-        transition: border-color 0.2s;
-      }
-      .chat-input:focus {
-        border-color: var(--accent);
-        box-shadow: var(--shadow-glow);
-      }
-      .chat-input::placeholder {
-        color: var(--text-dim);
-      }
-
-      /* Activity Visualizer */
-      .activity-feed {
-        max-height: 400px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .activity-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        background: var(--glass);
-        border-radius: var(--radius-sm);
-        font-size: 12px;
-        animation: fadeInUp 0.3s;
-        border-left: 3px solid transparent;
-      }
-      .activity-item.agent {
-        border-left-color: var(--purple);
-      }
-      .activity-item.provider {
-        border-left-color: var(--cyan);
-      }
-      .activity-item.tool {
-        border-left-color: var(--success);
-      }
-      .activity-item.system {
-        border-left-color: var(--warning);
-      }
-      .activity-item.error {
-        border-left-color: var(--danger);
-      }
-      .activity-time {
-        color: var(--text-dim);
-        font-family: var(--mono);
-        font-size: 11px;
-        min-width: 60px;
-      }
-      .activity-type {
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 10px;
-        font-weight: 600;
-        text-transform: uppercase;
-        min-width: 60px;
-        text-align: center;
-      }
-      .activity-type.agent {
-        background: rgba(139, 92, 246, 0.2);
-        color: var(--purple);
-      }
-      .activity-type.provider {
-        background: rgba(6, 182, 212, 0.2);
-        color: var(--cyan);
-      }
-      .activity-type.tool {
-        background: rgba(16, 185, 129, 0.2);
-        color: var(--success);
-      }
-      .activity-type.system {
-        background: rgba(245, 158, 11, 0.2);
-        color: var(--warning);
-      }
-
-      /* Sandbox Editor */
-      .editor-container {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
-      .editor-toolbar {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 16px;
-        background: var(--bg-secondary);
-        border-bottom: 1px solid var(--border);
-      }
-      .editor-area {
-        flex: 1;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0;
-      }
-      .editor-pane,
-      .output-pane {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      .editor-pane {
-        border-right: 1px solid var(--border);
-      }
-      .code-editor {
-        flex: 1;
-        padding: 16px;
-        background: var(--bg-input);
-        color: var(--text-primary);
-        font-family: var(--mono);
-        font-size: 13px;
-        line-height: 1.6;
-        border: none;
-        outline: none;
-        resize: none;
-        tab-size: 4;
-      }
-      .output-content {
-        flex: 1;
-        padding: 16px;
-        font-family: var(--mono);
-        font-size: 13px;
-        background: var(--bg-primary);
-        color: var(--success);
-        overflow-y: auto;
-        white-space: pre-wrap;
-      }
-      .pane-header {
-        padding: 8px 16px;
-        background: var(--bg-card);
-        border-bottom: 1px solid var(--border);
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-secondary);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      /* Provider status badges */
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 3px 10px;
-        border-radius: 100px;
-        font-size: 11px;
-        font-weight: 600;
-      }
-      .badge-success {
-        background: rgba(16, 185, 129, 0.15);
-        color: var(--success);
-      }
-      .badge-warning {
-        background: rgba(245, 158, 11, 0.15);
-        color: var(--warning);
-      }
-      .badge-danger {
-        background: rgba(239, 68, 68, 0.15);
-        color: var(--danger);
-      }
-
-      /* Provider card */
-      .provider-card {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 12px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-      }
-      .provider-card:last-child {
-        border-bottom: none;
-      }
-      .provider-name {
-        font-weight: 600;
-        font-size: 13px;
-      }
-      .provider-model {
-        font-size: 11px;
-        color: var(--text-dim);
-      }
-
-      /* Thinking visualizer */
-      .thinking-container {
-        padding: 16px;
-        background: rgba(139, 92, 246, 0.05);
-        border: 1px solid rgba(139, 92, 246, 0.2);
-        border-radius: var(--radius);
-        margin-bottom: 16px;
-      }
-      .thinking-step {
-        display: flex;
-        gap: 10px;
-        align-items: flex-start;
-        padding: 6px 0;
-        font-size: 12px;
-        color: var(--text-secondary);
-      }
-      .thinking-dot {
-        width: 8px;
-        height: 8px;
-        margin-top: 4px;
-        border-radius: 50%;
-        background: var(--purple);
-        flex-shrink: 0;
-      }
-
-      /* File browser */
-      .file-list {
-        max-height: 400px;
-        overflow-y: auto;
-      }
-      .file-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 14px;
-        cursor: pointer;
-        transition: background 0.15s;
-        font-size: 13px;
-      }
-      .file-item:hover {
-        background: var(--bg-hover);
-      }
-      .file-icon {
-        width: 20px;
-        text-align: center;
-      }
-
-      /* Hide/show sections */
-      .page {
-        display: none;
-        height: 100%;
-      }
-      .page.active {
-        display: flex;
-        flex-direction: column;
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-        .sidebar {
-          width: 60px;
-          min-width: 60px;
-        }
-        .logo-text,
-        .nav-item span,
-        .nav-section,
-        .sidebar-footer span {
-          display: none;
-        }
-        .nav-item {
-          justify-content: center;
-          padding: 12px;
-        }
-        .grid-4,
-        .grid-3 {
-          grid-template-columns: 1fr 1fr;
-        }
-        .editor-area {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="app">
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <div class="logo">
-          <div class="logo-icon">AI</div>
-          <div class="logo-text">
-            <h1>ALD-01</h1>
-            <span>v1.0.0</span>
-          </div>
-        </div>
-        <div class="nav">
-          <div class="nav-section">Main</div>
-          <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')"><i class="icon lucide-layout-dashboard"></i><span>Dashboard</span></div>
-          <div class="nav-item" data-page="chat" onclick="showPage('chat')"><i class="icon lucide-message-square"></i><span>Chat</span></div>
-          <div class="nav-item" data-page="sandbox" onclick="showPage('sandbox')"><i class="icon lucide-flask-conical"></i><span>Sandbox</span></div>
-          <div class="nav-section">Monitor</div>
-          <div class="nav-item" data-page="activity" onclick="showPage('activity')"><i class="icon lucide-activity"></i><span>Activity</span></div>
-          <div class="nav-item" data-page="providers" onclick="showPage('providers')"><i class="icon lucide-cloud"></i><span>Providers</span></div>
-          <div class="nav-item" data-page="agents" onclick="showPage('agents')"><i class="icon lucide-bot"></i><span>Agents</span></div>
-          <div class="nav-section">Intelligence</div>
-          <div class="nav-item" data-page="brain" onclick="showPage('brain')"><i class="icon lucide-brain"></i><span>Brain</span></div>
-          <div class="nav-item" data-page="skills" onclick="showPage('skills')"><i class="icon lucide-sparkles"></i><span>Skills</span></div>
-          <div class="nav-item" data-page="mcp" onclick="showPage('mcp')"><i class="icon lucide-link"></i><span>MCP</span></div>
-          <div class="nav-section">System</div>
-          <div class="nav-item" data-page="files" onclick="showPage('files')"><i class="icon lucide-folder"></i><span>Files</span></div>
-          <div class="nav-item" data-page="terminal" onclick="showPage('terminal')"><i class="icon lucide-terminal"></i><span>Terminal</span></div>
-          <div class="nav-item" data-page="integrations" onclick="showPage('integrations')"><i class="icon lucide-plug"></i><span>Integrations</span></div>
-          <div class="nav-item" data-page="cron" onclick="showPage('cron')"><i class="icon lucide-clock"></i><span>Cron Jobs</span></div>
-          <div class="nav-item" data-page="doctor" onclick="showPage('doctor')"><i class="icon lucide-stethoscope"></i><span>Doctor</span></div>
-          <div class="nav-item" data-page="settings" onclick="showPage('settings')"><i class="icon lucide-settings"></i><span>Settings</span></div>
-        </div>
-        <div class="sidebar-footer">
-          <span class="status-dot online" id="wsStatus"></span>
-          <span id="wsStatusText">Connected</span>
-        </div>
-      </div>
-
-      <!-- Main Content -->
-      <div class="main">
-        <div class="header">
-          <div class="header-title" id="pageTitle">Dashboard</div>
-          <div class="header-actions">
-            <select
-              id="brainPower"
-              class="btn btn-sm"
-              onchange="setBrainPower(this.value)"
-            >
-              <option value="3">🧠 Level 3</option>
-              <option value="5" selected>🧠 Level 5</option>
-              <option value="7">🧠 Level 7</option>
-              <option value="10">🧠 Level 10</option>
-            </select>
-            <button class="btn btn-sm" onclick="loadStatus()">
-              🔄 Refresh
+<div class="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">AL</div>
+            <div class="sidebar-title">ALD-01 Dashboard</div>
+            <button class="btn btn-icon btn-ghost" id="toggle-sidebar" style="margin-left: auto;">
+                <i data-lucide="panel-left-close"></i>
             </button>
-          </div>
+        </div>
+        
+        <div class="sidebar-nav">
+            <!-- Main Group -->
+            <div class="nav-section">
+                <div class="nav-section-label">Core</div>
+                <div class="nav-item active" data-page="chat">
+                    <i data-lucide="message-square"></i>
+                    <span>Chat Engine</span>
+                </div>
+                <div class="nav-item" data-page="brain">
+                    <i data-lucide="brain"></i>
+                    <span>Knowledge Brain</span>
+                </div>
+                <div class="nav-item" data-page="terminal">
+                    <i data-lucide="terminal-square"></i>
+                    <span>Terminal</span>
+                </div>
+                <div class="nav-item" data-page="metrics">
+                    <i data-lucide="activity"></i>
+                    <span>System Metrics</span>
+                </div>
+            </div>
+
+            <!-- Features Group -->
+            <div class="nav-section">
+                <div class="nav-section-label">Features</div>
+                <div class="nav-item" data-page="code">
+                    <i data-lucide="code-2"></i>
+                    <span>Code Analyzer</span>
+                    <span class="nav-badge" id="badge-code">Beta</span>
+                </div>
+                <div class="nav-item" data-page="webhooks">
+                    <i data-lucide="webhook"></i>
+                    <span>Webhooks</span>
+                </div>
+                <div class="nav-item" data-page="pipelines">
+                    <i data-lucide="git-merge"></i>
+                    <span>Pipelines</span>
+                </div>
+                <div class="nav-item" data-page="prompts">
+                    <i data-lucide="library"></i>
+                    <span>Prompt Library</span>
+                </div>
+            </div>
+
+            <!-- Management Group -->
+            <div class="nav-section">
+                <div class="nav-section-label">System</div>
+                <div class="nav-item" data-page="integrations">
+                    <i data-lucide="puzzle"></i>
+                    <span>Integrations</span>
+                </div>
+                <div class="nav-item" data-page="backups">
+                    <i data-lucide="database-backup"></i>
+                    <span>Backups</span>
+                </div>
+                <div class="nav-item" data-page="settings">
+                    <i data-lucide="settings"></i>
+                    <span>Configuration</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Dashboard Page -->
-        <div class="page active" id="page-dashboard">
-          <div class="content">
-            <div class="grid grid-4" id="statsGrid">
-              <div class="card">
-                <div class="stat">
-                  <div class="stat-value" id="statUptime">0m</div>
-                  <div class="stat-label">Uptime</div>
+        <div class="sidebar-footer">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full active-dot" id="ws-status-dot" style="background: var(--accent-orange)"></div>
+                    <span class="text-xs text-muted font-medium" id="ws-status-text">Connecting...</span>
                 </div>
-              </div>
-              <div class="card">
-                <div class="stat">
-                  <div class="stat-value" id="statRequests">0</div>
-                  <div class="stat-label">Requests</div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="stat">
-                  <div class="stat-value" id="statProviders">0</div>
-                  <div class="stat-label">Providers</div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="stat">
-                  <div class="stat-value" id="statMessages">0</div>
-                  <div class="stat-label">Messages</div>
-                </div>
-              </div>
+                <span class="text-xs text-muted" id="ald-version">v2.1.0</span>
             </div>
-            <div class="grid grid-2" style="margin-top: 16px">
-              <div class="card">
-                <div class="card-header">⚡ Live Activity</div>
-                <div class="card-body">
-                  <div class="activity-feed" id="activityFeed">
-                    <div
-                      style="
-                        color: var(--text-dim);
-                        text-align: center;
-                        padding: 20px;
-                      "
-                    >
-                      Waiting for activity...
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        
+        <!-- Header -->
+        <header class="content-header">
+            <h1 class="page-title" id="current-page-title">Chat Engine</h1>
+            
+            <div class="header-actions">
+                <button class="btn btn-secondary btn-sm" id="btn-self-heal">
+                    <i data-lucide="stethoscope" class="w-4 h-4"></i> Self-Heal
+                </button>
+                <div class="input-group" style="width: 150px;">
+                    <select class="input input-sm" id="model-selector">
+                        <option value="openai">GPT-4o</option>
+                        <option value="anthropic">Claude-3</option>
+                        <option value="gemini">Gemini-Pro</option>
+                        <option value="local">Local Model</option>
+                    </select>
+                </div>
+                <div class="input-group" style="width: 120px;">
+                    <select class="input input-sm" id="mode-selector">
+                        <option value="default">Default</option>
+                        <option value="coder">Coder</option>
+                        <option value="architect">Architect</option>
+                    </select>
+                </div>
+                <button class="btn btn-icon btn-ghost" id="btn-theme-toggle">
+                    <i data-lucide="moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Pages Container -->
+        <div class="content-body" id="pages-container">
+            
+            <!-- Page: Chat -->
+            <div id="page-chat" class="page active">
+                <div class="chat-container">
+                    <div class="chat-main">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="empty-state">
+                                <i data-lucide="message-square" class="empty-state-icon"></i>
+                                <h3 class="empty-state-title">Welcome to ALD-01 Chat</h3>
+                                <p class="empty-state-text">I am your autonomous development assistant. I can write code, analyze systems, run commands, and help build your projects.</p>
+                            </div>
+                        </div>
+                        <div class="chat-input-area border-t border-subtle">
+                            <div class="chat-input-wrapper">
+                                <button class="btn btn-icon btn-ghost" id="btn-context" title="Context Management">
+                                    <i data-lucide="layers"></i>
+                                </button>
+                                <button class="btn btn-icon btn-ghost" id="btn-upload" title="Upload File">
+                                    <i data-lucide="paperclip"></i>
+                                </button>
+                                <textarea class="chat-input" id="chat-input" placeholder="Message ALD-01... (Shift+Enter for newline)" rows="1"></textarea>
+                                <button class="btn btn-primary" id="btn-send">
+                                    <i data-lucide="send"></i>
+                                </button>
+                            </div>
+                            <div class="flex justify-between items-center mt-2">
+                                <div class="text-xs text-muted" id="chat-tokens">Tokens: ~0</div>
+                                <div class="text-xs text-muted" id="typing-indicator" style="display: none;">
+                                    ALD-01 is typing <div class="dot-pulse ml-2"><span></span><span></span><span></span></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
+                    <div class="chat-sidebar p-4 shrink-0">
+                        <h3 class="text-sm font-semibold mb-3">Active Context</h3>
+                        <div class="flex flex-col gap-2 mb-4" id="context-list">
+                            <div class="card p-3 py-2 text-xs flex justify-between items-center" style="background: rgba(16, 185, 129, 0.1);">
+                                <span class="text-green font-medium">Memory Augmented</span>
+                                <i data-lucide="check-circle" class="w-3 h-3 text-green"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-sm font-semibold mb-3">Quick Actions</h3>
+                        <div class="flex flex-col gap-2">
+                            <button class="btn btn-secondary w-full justify-start text-xs" onclick="app.actionExplain()">
+                                <i data-lucide="help-circle" class="w-3 h-3"></i> Explain Current File
+                            </button>
+                            <button class="btn btn-secondary w-full justify-start text-xs" onclick="app.actionOptimize()">
+                                <i data-lucide="zap" class="w-3 h-3"></i> Optimize Code
+                            </button>
+                            <button class="btn btn-secondary w-full justify-start text-xs" onclick="app.actionTests()">
+                                <i data-lucide="file-check-2" class="w-3 h-3"></i> Generate Tests
+                            </button>
+                            <button class="btn btn-danger w-full justify-start text-xs mt-2" onclick="app.clearChat()">
+                                <i data-lucide="trash-2" class="w-3 h-3"></i> Clear Chat
+                            </button>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="card">
-                <div class="card-header">🤖 Agent Status</div>
-                <div class="card-body" id="agentStatusList"></div>
-              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Chat Page (Enhanced AGI Experience) -->
-        <div class="page" id="page-chat">
-          <div style="display:flex;height:100%">
-            <!-- Chat Sidebar -->
-            <div style="width:240px;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg-secondary)">
-              <div style="padding:12px;border-bottom:1px solid var(--border);display:flex;gap:8px">
-                <button class="btn btn-primary btn-sm" style="flex:1" onclick="newChat()">+ New Chat</button>
-                <button class="btn btn-sm" onclick="loadChatHistory()" title="Refresh">🔄</button>
-              </div>
-              <div id="chatHistory" style="flex:1;overflow-y:auto;padding:4px"></div>
-              <div style="padding:8px 12px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim)">
-                <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
-                  <input type="checkbox" id="voiceToggle" onchange="toggleVoice(this.checked)">
-                  🔊 Voice Responses
-                </label>
-              </div>
-            </div>
-            <!-- Chat Main -->
-            <div class="chat-container" style="flex:1">
-              <div class="chat-messages" id="chatMessages">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px">
-                  <div style="font-size:48px">🤖</div>
-                  <div style="font-size:18px;font-weight:600">ALD-01</div>
-                  <div style="color:var(--text-dim);text-align:center;max-width:400px">Your local AGI assistant. Ask me anything — coding, analysis, research, or just chat.</div>
+            <!-- Page: Brain -->
+            <div id="page-brain" class="page">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Knowledge Graph</h2>
+                    <div class="flex gap-2">
+                        <button class="btn btn-secondary btn-sm" onclick="app.refreshBrain()"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync</button>
+                        <button class="btn btn-primary btn-sm"><i data-lucide="plus" class="w-4 h-4"></i> Add Node</button>
+                    </div>
                 </div>
-              </div>
-              <div class="chat-input-area">
-                <textarea class="chat-input" id="chatInput" placeholder="Ask ALD-01 anything... (Enter to send)" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
-                <button class="btn btn-primary" onclick="sendChat()">Send →</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sandbox Page -->
-        <div class="page" id="page-sandbox">
-          <div class="editor-container">
-            <div class="editor-toolbar">
-              <button class="btn btn-primary btn-sm" onclick="runSandbox()">
-                ▶ Run
-              </button>
-              <button class="btn btn-sm" onclick="clearSandbox()">
-                🗑 Clear
-              </button>
-              <button class="btn btn-sm" onclick="exportSandbox()">
-                📥 Export
-              </button>
-              <select id="sandboxLang" class="btn btn-sm">
-                <option value="python">Python</option>
-                <option value="javascript">JavaScript</option>
-                <option value="html">HTML</option>
-              </select>
-              <span style="flex: 1"></span>
-              <span
-                id="sandboxStatus"
-                style="font-size: 12px; color: var(--text-dim)"
-                >Ready</span
-              >
-            </div>
-            <div class="editor-area">
-              <div class="editor-pane">
-                <div class="pane-header"><span>Code</span></div>
-                <textarea
-                  class="code-editor"
-                  id="codeEditor"
-                  spellcheck="false"
-                  placeholder="# Write your code here..."
-                >
-# Hello from ALD-01!
-print("Hello, world!")
-
-for i in range(5):
-    print(f"  Step {i+1}: Processing...")
-
-print("Done!")</textarea
-                >
-              </div>
-              <div class="output-pane">
-                <div class="pane-header">
-                  <span>Output</span
-                  ><button
-                    class="btn btn-sm"
-                    onclick="
-                      document.getElementById('outputContent').textContent = ''
-                    "
-                  >
-                    Clear
-                  </button>
+                
+                <div class="page-grid-3 mb-6">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-brain-nodes">0</div>
+                        <div class="stat-label">Total Nodes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-brain-edges">0</div>
+                        <div class="stat-label">Connections</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-brain-types">0</div>
+                        <div class="stat-label">Entity Types</div>
+                    </div>
                 </div>
-                <div class="output-content" id="outputContent">
-                  Click "Run" to execute code...
+
+                <div class="card p-0 overflow-hidden mb-6 card-glow">
+                    <div class="brain-canvas" id="brain-network-canvas">
+                        <div class="flex items-center justify-center h-full w-full">
+                            <span class="text-muted text-sm">Loading graph engine...</span>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Activity Page -->
-        <div class="page" id="page-activity">
-          <div class="content">
-            <div class="card">
-              <div class="card-header">
-                ⚡ Full Activity Log<button
-                  class="btn btn-sm"
-                  onclick="loadActivity()"
-                >
-                  Refresh
-                </button>
-              </div>
-              <div class="card-body">
-                <div
-                  class="activity-feed"
-                  id="fullActivityFeed"
-                  style="max-height: 600px"
-                ></div>
-              </div>
-            </div>
-            <div class="card" style="margin-top: 16px">
-              <div class="card-header">🧠 AI Decisions</div>
-              <div class="card-body" id="decisionsLog"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Providers Page -->
-        <div class="page" id="page-providers">
-          <div class="content">
-            <div class="card">
-              <div class="card-header">
-                🔌 Active Providers<button
-                  class="btn btn-sm"
-                  onclick="testProviders()"
-                >
-                  Test All
-                </button>
-              </div>
-              <div class="card-body" id="providersList"></div>
-            </div>
-            <div class="card" style="margin-top: 16px">
-              <div class="card-header">✨ Available Free Providers</div>
-              <div class="card-body" id="freeProvidersList"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Agents Page -->
-        <div class="page" id="page-agents">
-          <div class="content">
-            <div class="grid grid-2" id="agentCards"></div>
-          </div>
-        </div>
-
-        <!-- Files Page -->
-        <div class="page" id="page-files">
-          <div class="content">
-            <div class="card">
-              <div class="card-header">
-                📁 File Browser
-                <div style="display: flex; gap: 8px">
-                  <input
-                    type="text"
-                    id="filePath"
-                    class="chat-input"
-                    style="min-height: 32px; font-size: 12px; width: 300px"
-                    value="~"
-                    onkeydown="if (event.key === 'Enter') browseFiles();"
-                  />
-                  <button class="btn btn-sm" onclick="browseFiles()">Go</button>
+                
+                <div class="card">
+                    <div class="card-header pb-0 border-b-0 mb-4">
+                        <h3 class="card-title">Recent Knowledge Items</h3>
+                    </div>
+                    <div class="table-container">
+                        <table id="brain-table">
+                            <thead>
+                                <tr>
+                                    <th>Entity Name</th>
+                                    <th>Type</th>
+                                    <th>Observations</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No data loaded</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-              </div>
-              <div class="card-body">
-                <div class="file-list" id="fileList"></div>
-              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Terminal Page -->
-        <div class="page" id="page-terminal">
-          <div class="content">
-            <div class="card" style="height: 100%">
-              <div class="card-header">🖥️ Terminal</div>
-              <div
-                class="card-body"
-                style="
-                  display: flex;
-                  flex-direction: column;
-                  height: calc(100% - 50px);
-                "
-              >
-                <div
-                  class="output-content"
-                  id="terminalOutput"
-                  style="flex: 1; margin-bottom: 12px"
-                >
-                  $ Ready. Type a command below.
+            <!-- Page: Metrics -->
+            <div id="page-metrics" class="page">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-xl font-semibold">System Metrics</h2>
+                    <button class="btn btn-secondary btn-sm" onclick="app.refreshMetrics()"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
                 </div>
-                <div style="display: flex; gap: 8px">
-                  <input
-                    type="text"
-                    id="terminalInput"
-                    class="chat-input"
-                    style="min-height: 36px"
-                    placeholder="Enter command..."
-                    onkeydown="if (event.key === 'Enter') runTerminal();"
-                  />
-                  <button
-                    class="btn btn-primary btn-sm"
-                    onclick="runTerminal()"
-                  >
-                    Run
-                  </button>
+
+                <div class="page-grid-4 mb-6">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-cpu">0%</div>
+                        <div class="stat-label">CPU Usage</div>
+                        <div class="progress mt-3"><div class="progress-fill" id="prog-cpu" style="width: 0%"></div></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-mem">0 GB</div>
+                        <div class="stat-label">Memory</div>
+                        <div class="progress mt-3"><div class="progress-fill" id="prog-mem" style="width: 0%"></div></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-uptime">0h 0m</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-active">OK</div>
+                        <div class="stat-label">Health Status</div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Doctor Page -->
-        <div class="page" id="page-doctor">
-          <div class="content">
-            <div class="card">
-              <div class="card-header">
-                🩺 System Diagnostics<button
-                  class="btn btn-primary btn-sm"
-                  onclick="runDoctor()"
-                >
-                  Run Check
-                </button>
-              </div>
-              <div class="card-body" id="doctorResults">
-                <p style="color: var(--text-dim)">
-                  Click "Run Check" to diagnose your system.
-                </p>
-              </div>
+                <div class="page-grid-2">
+                    <div class="card">
+                        <h3 class="font-semibold mb-4">API Throughput</h3>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-muted">Requests/min</span>
+                            <span class="font-medium" id="stat-rpm">0</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-muted">Error Rate</span>
+                            <span class="font-medium text-green" id="stat-err">0.0%</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-muted">Avg Latency</span>
+                            <span class="font-medium" id="stat-lat">0ms</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="font-semibold mb-4">Worker Status</h3>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-muted">Active Workers</span>
+                            <span class="badge badge-green" id="stat-workers">0/4</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-muted">Tasks Queued</span>
+                            <span class="font-medium" id="stat-queued">0</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-muted">Tasks Completed</span>
+                            <span class="font-medium" id="stat-completed">0</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Brain Page -->
-        <div class="page" id="page-brain">
-          <div class="content">
-            <div class="grid grid-4" id="brainStats"></div>
-            <div class="card" style="margin-top:16px">
-              <div class="card-header">🧠 Neural Network Visualization</div>
-              <div class="card-body" style="position:relative;min-height:400px">
-                <canvas id="brainCanvas" style="width:100%;height:400px;border-radius:8px;background:var(--bg-primary)"></canvas>
-              </div>
-            </div>
-            <div class="grid grid-2" style="margin-top:16px">
-              <div class="card">
-                <div class="card-header">⚡ Active Skills</div>
-                <div class="card-body" id="brainSkillsList" style="max-height:300px;overflow-y:auto"></div>
-              </div>
-              <div class="card">
-                <div class="card-header">📈 Growth Metrics</div>
-                <div class="card-body" id="brainGrowth"></div>
-              </div>
-            </div>
-          </div>
-        </div>
+            <!-- Page: Code -> Analyzer -->
+            <div id="page-code" class="page">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-xl font-semibold">Code Analyzer</h2>
+                    <div class="flex gap-2">
+                        <input type="text" class="input input-sm w-48" id="analyze-path" placeholder="Path (. or /src)">
+                        <button class="btn btn-primary btn-sm" onclick="app.runCodeAnalysis()">
+                            <i data-lucide="play" class="w-4 h-4"></i> Run Scan
+                        </button>
+                    </div>
+                </div>
 
-        <!-- Skills Page -->
-        <div class="page" id="page-skills">
-          <div class="content">
-            <div class="grid grid-4" id="skillStats"></div>
-            <div class="card" style="margin-top:16px">
-              <div class="card-header">📦 Skill Catalog <button class="btn btn-sm" onclick="loadSkills()">Refresh</button></div>
-              <div class="card-body"><div class="grid grid-3" id="skillsList"></div></div>
-            </div>
-          </div>
-        </div>
+                <!-- Analysis Results (Hidden by default) -->
+                <div class="empty-state" id="analysis-empty">
+                    <i data-lucide="code-2" class="empty-state-icon"></i>
+                    <h3 class="empty-state-title">No Analysis Data</h3>
+                    <p class="empty-state-text">Enter a directory or file path and click "Run Scan" to perform static code analysis.</p>
+                </div>
 
-        <!-- MCP Page -->
-        <div class="page" id="page-mcp">
-          <div class="content">
-            <div class="grid grid-4" id="mcpStats"></div>
-            <div class="card" style="margin-top:16px">
-              <div class="card-header">🔗 MCP Servers <button class="btn btn-sm" onclick="loadMCP()">Refresh</button></div>
-              <div class="card-body"><div class="grid grid-2" id="mcpList"></div></div>
-            </div>
-          </div>
-        </div>
+                <div id="analysis-results" style="display: none;">
+                    <div class="page-grid-4 mb-6">
+                        <div class="stat-card">
+                            <div class="stat-value" id="ana-score">0</div>
+                            <div class="stat-label">Quality Score</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="ana-files">0</div>
+                            <div class="stat-label">Files Analyzed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value text-red" id="ana-sec">0</div>
+                            <div class="stat-label">Security Alerts</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value text-yellow" id="ana-complex">0</div>
+                            <div class="stat-label">High Complexity</div>
+                        </div>
+                    </div>
 
-        <!-- Integrations Page -->
-        <div class="page" id="page-integrations">
-          <div class="content">
-            <div class="card">
-              <div class="card-header">🔌 External Tools <button class="btn btn-primary btn-sm" onclick="scanIntegrations()">Scan System</button></div>
-              <div class="card-body"><div class="grid grid-3" id="integrationsList"></div></div>
+                    <div class="page-grid-2">
+                        <div class="card">
+                            <h3 class="card-title mb-4">Security Hotspots</h3>
+                            <div class="table-container">
+                                <table id="sec-hotspots-table">
+                                    <thead><tr><th>File</th><th>Issue</th><th>Severity</th></tr></thead>
+                                    <tbody id="sec-hotspots-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title mb-4">Improvement Suggestions</h3>
+                            <ul class="flex flex-col gap-3" id="ana-suggestions"></ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Cron Jobs Page -->
-        <div class="page" id="page-cron">
-          <div class="content">
-            <div class="card">
-              <div class="card-header">⏰ Scheduled Jobs <button class="btn btn-sm" onclick="loadCron()">Refresh</button></div>
-              <div class="card-body" id="cronList"></div>
+            <!-- Page: Webhooks -->
+            <div id="page-webhooks" class="page">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-xl font-semibold">Webhook Integrations</h2>
+                    <button class="btn btn-primary btn-sm" onclick="app.showWebhookModal()">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Add Webhook
+                    </button>
+                </div>
+                <div class="card p-0 overflow-hidden">
+                    <table class="w-full">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>URL</th>
+                                <th>Events</th>
+                                <th>Stats</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="webhooks-table">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Settings Page -->
-        <div class="page" id="page-settings">
-          <div class="content">
-            <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-              <button class="btn btn-primary btn-sm" onclick="showSettingsTab('general')" id="stab-general">⚙️ General</button>
-              <button class="btn btn-sm" onclick="showSettingsTab('config')" id="stab-config">📝 Config</button>
-              <button class="btn btn-sm" onclick="showSettingsTab('test')" id="stab-test">🧪 Test</button>
-              <button class="btn btn-sm" onclick="showSettingsTab('database')" id="stab-database">💾 Database</button>
-              <button class="btn btn-sm" onclick="showSettingsTab('snapshots')" id="stab-snapshots">📸 Snapshots</button>
-              <button class="btn btn-sm" onclick="showSettingsTab('language')" id="stab-language">🌐 Language</button>
-              <button class="btn btn-sm" onclick="showSettingsTab('about')" id="stab-about">ℹ️ About</button>
+            <!-- Page: Terminal -->
+            <div id="page-terminal" class="page">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Command Terminal</h2>
+                    <button class="btn btn-secondary btn-sm" onclick="app.clearTerminal()">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> Clear output
+                    </button>
+                </div>
+                
+                <div class="terminal mb-4">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                        <span class="ml-2 text-xs text-muted" id="term-cwd">~/ald-01</span>
+                    </div>
+                    <div class="terminal-body" id="term-output">
+                        <div class="terminal-line"><span class="terminal-info">ALD-01 Sandbox Executor v1.0 connected.</span></div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <input type="text" class="input font-mono flex-1" id="term-input" placeholder="Enter command (e.g. ls -la, python script.py)...">
+                    <button class="btn btn-primary" id="btn-term-run">Execute</button>
+                </div>
             </div>
-            <div id="settingsContent"></div>
-          </div>
-        </div>
 
-      </div>
+            <!-- Page: Settings -->
+            <div id="page-settings" class="page">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-xl font-semibold">Configuration</h2>
+                    <button class="btn btn-primary btn-sm" onclick="app.saveConfig()">
+                        <i data-lucide="save" class="w-4 h-4"></i> Save All
+                    </button>
+                </div>
+                
+                <div class="page-grid-2">
+                    <div class="card">
+                        <h3 class="card-title mb-4">Preferences</h3>
+                        <div class="flex flex-col gap-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="font-medium">Dark Mode</div>
+                                    <div class="text-xs text-muted">Use dark theme across entire UI</div>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" id="pref-dark" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="font-medium">Auto-Healing</div>
+                                    <div class="text-xs text-muted">Allow ALD to fix errors automatically</div>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" id="pref-heal" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="font-medium">Verbose Logs</div>
+                                    <div class="text-xs text-muted">Detailed terminal logging output</div>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" id="pref-verbose">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title mb-4">Export Data</h3>
+                        <div class="flex flex-col gap-3">
+                            <button class="btn btn-secondary w-full justify-center" onclick="app.exportData('brain')">Export Brain (JSON)</button>
+                            <button class="btn btn-secondary w-full justify-center" onclick="app.exportData('chat')">Export Conversation (Markdown)</button>
+                            <button class="btn btn-secondary w-full justify-center text-accent" onclick="app.exportData('full')">Export Full System State</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- /content-body -->
+    </main>
+</div>
+
+<!-- Modal: Add Webhook -->
+<div class="modal-overlay" id="modal-webhook">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Register Webhook</h3>
+            <button class="modal-close" onclick="app.closeModal('webhook')"><i data-lucide="x"></i></button>
+        </div>
+        <div class="flex flex-col gap-4">
+            <div class="input-group">
+                <label class="input-label">Payload URL</label>
+                <input type="url" id="wh-url" class="input" placeholder="https://api.example.com/webhook">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Events to subscribe</label>
+                <input type="text" id="wh-events" class="input" placeholder="* for all, or chat.message, system.error">
+            </div>
+            <div class="input-group">
+                <label class="input-label">HMAC Secret (Optional)</label>
+                <input type="password" id="wh-secret" class="input" placeholder="To sign payloads securely">
+            </div>
+            <div class="flex justify-end gap-3 mt-4">
+                <button class="btn btn-secondary" onclick="app.closeModal('webhook')">Cancel</button>
+                <button class="btn btn-primary" onclick="app.createWebhook()">Create Webhook</button>
+            </div>
+        </div>
     </div>
+</div>
 
-    <script>
-      const API = "";
-      let ws = null;
-      let conversationId = null;
+<!-- Toasts Container -->
+<div class="toast-container" id="toast-container"></div>
 
-      // ── Page Navigation ──
-      function showPage(page) {
-        document
-          .querySelectorAll(".page")
-          .forEach((p) => p.classList.remove("active"));
-        document
-          .querySelectorAll(".nav-item")
-          .forEach((n) => n.classList.remove("active"));
-        document.getElementById(`page-${page}`).classList.add("active");
-        document.querySelector(`[data-page="${page}"]`).classList.add("active");
-        document.getElementById("pageTitle").textContent =
-          page.charAt(0).toUpperCase() + page.slice(1);
-
-        // Load data for page
-        if (page === "providers") {
-          loadProviders();
-          loadFreeProviders();
-        }
-        if (page === "agents") loadAgents();
-        if (page === "activity") {
-          loadActivity();
-          loadDecisions();
-        }
-        if (page === "doctor") {
-        }
-        if (page === "files") browseFiles();
-      }
-
-      // ── WebSocket ──
-      function connectWS() {
-        const proto = location.protocol === "https:" ? "wss" : "ws";
-        ws = new WebSocket(`${proto}://${location.host}/ws`);
-        ws.onopen = () => {
-          setWSStatus(true);
-        };
-        ws.onclose = () => {
-          setWSStatus(false);
-          setTimeout(connectWS, 3000);
-        };
-        ws.onerror = () => {
-          setWSStatus(false);
-        };
-        ws.onmessage = (e) => {
-          try {
-            const event = JSON.parse(e.data);
-            if (event.type !== "heartbeat") addActivityItem(event);
-          } catch (err) {}
-        };
-      }
-      function setWSStatus(online) {
-        const dot = document.getElementById("wsStatus");
-        const text = document.getElementById("wsStatusText");
-        dot.className = `status-dot ${online ? "online" : "offline"}`;
-        text.textContent = online ? "Connected" : "Reconnecting...";
-      }
-
-      // ── API Helpers ──
-      async function api(path, opts = {}) {
-        const resp = await fetch(API + path, {
-          headers: { "Content-Type": "application/json" },
-          ...opts,
-        });
-        return resp.json();
-      }
-
-      // ── Status ──
-      async function loadStatus() {
-        try {
-          const s = await api("/api/status");
-          document.getElementById("statUptime").textContent =
-            s.uptime_human || "0m";
-          document.getElementById("statRequests").textContent =
-            s.total_requests || 0;
-          document.getElementById("statProviders").textContent =
-            `${s.providers?.online_providers || 0}/${s.providers?.total_providers || 0}`;
-          document.getElementById("statMessages").textContent =
-            s.memory?.messages || 0;
-          document.getElementById("brainPower").value = s.brain_power || 5;
-
-          // Agent status
-          const agentEl = document.getElementById("agentStatusList");
-          if (s.agents) {
-            agentEl.innerHTML = Object.values(s.agents)
-              .map(
-                (a) => `
-                <div class="provider-card">
-                    <div><div class="provider-name">${a.display_name}</div><div class="provider-model">${a.expertise}</div></div>
-                    <span class="badge ${a.enabled ? "badge-success" : "badge-danger"}">${a.enabled ? "● Active" : "○ Disabled"}</span>
-                </div>`,
-              )
-              .join("");
-          }
-        } catch (e) {
-          console.error("Status error:", e);
-        }
-      }
-
-      // ── Chat ──
-      async function sendChat() {
-        const input = document.getElementById("chatInput");
-        const query = input.value.trim();
-        if (!query) return;
-        input.value = "";
-
-        const messagesEl = document.getElementById("chatMessages");
-        messagesEl.innerHTML += `<div class="chat-message user"><div>${escHtml(query)}</div></div>`;
-
-        const thinkingEl = document.createElement("div");
-        thinkingEl.className = "chat-message assistant";
-        thinkingEl.innerHTML =
-          '<div class="thinking-container"><div class="thinking-step"><div class="thinking-dot"></div>Thinking...</div></div>';
-        messagesEl.appendChild(thinkingEl);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-
-        try {
-          const data = await api("/api/chat", {
-            method: "POST",
-            body: JSON.stringify({ query, conversation_id: conversationId }),
-          });
-
-          if (data.metadata?.conversation_id)
-            conversationId = data.metadata.conversation_id;
-
-          thinkingEl.innerHTML = `<div>${formatContent(data.content)}</div><div class="meta">${data.agent || ""} • ${data.model || ""} • ${Math.round(data.latency_ms || 0)}ms</div>`;
-        } catch (e) {
-          thinkingEl.innerHTML = `<div style="color:var(--danger)">Error: ${e.message}</div>`;
-        }
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-      }
-
-      // ── Sandbox ──
-      async function runSandbox() {
-        const code = document.getElementById("codeEditor").value;
-        const output = document.getElementById("outputContent");
-        const status = document.getElementById("sandboxStatus");
-
-        status.textContent = "Running...";
-        output.textContent = "⏳ Executing...\n";
-
-        try {
-          const data = await api("/api/sandbox/run", {
-            method: "POST",
-            body: JSON.stringify({ code }),
-          });
-          if (data.success) {
-            output.textContent = data.output?.stdout || "No output";
-            if (data.output?.stderr)
-              output.textContent += "\n--- STDERR ---\n" + data.output.stderr;
-            status.textContent = `✓ Done (${Math.round(data.duration_ms)}ms)`;
-          } else {
-            output.textContent =
-              "❌ Error:\n" +
-              (data.output?.stderr || data.error || "Unknown error");
-            status.textContent = "Error";
-          }
-        } catch (e) {
-          output.textContent = "❌ " + e.message;
-          status.textContent = "Error";
-        }
-      }
-      function clearSandbox() {
-        document.getElementById("codeEditor").value = "";
-        document.getElementById("outputContent").textContent = "";
-      }
-      function exportSandbox() {
-        const code = document.getElementById("codeEditor").value;
-        const lang = document.getElementById("sandboxLang").value;
-        const ext =
-          { python: ".py", javascript: ".js", html: ".html" }[lang] || ".txt";
-        const blob = new Blob([code], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `ald01_sandbox${ext}`;
-        a.click();
-        URL.revokeObjectURL(url);
-      }
-
-      // ── Providers ──
-      async function loadProviders() {
-        const data = await api("/api/providers");
-        const el = document.getElementById("providersList");
-        if (data.providers) {
-          el.innerHTML = Object.entries(data.providers)
-            .map(
-              ([name, p]) => `
-            <div class="provider-card">
-                <div><div class="provider-name">${name}</div><div class="provider-model">${p.models?.[0] || "N/A"}</div></div>
-                <div style="display:flex;align-items:center;gap:8px">
-                    ${p.online ? `<span style="font-size:11px;color:var(--text-dim)">${Math.round(p.latency_ms)}ms</span>` : ""}
-                    <span class="badge ${p.online ? "badge-success" : "badge-danger"}">${p.online ? "● Online" : "○ Offline"}</span>
-                </div>
-            </div>`,
-            )
-            .join("");
-        } else
-          el.innerHTML = '<p style="color:var(--text-dim)">No providers</p>';
-      }
-      async function loadFreeProviders() {
-        const data = await api("/api/providers/free");
-        const el = document.getElementById("freeProvidersList");
-        el.innerHTML = data
-          .filter((p) => p.free_tier)
-          .map(
-            (p) => `
-        <div class="provider-card">
-            <div><div class="provider-name">${p.name}</div><div class="provider-model">${p.default_model}</div></div>
-            <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-size:11px;color:var(--text-dim)">${p.env_key}</span>
-                <span class="badge ${p.configured ? "badge-success" : "badge-warning"}">${p.configured ? "✓ Set" : "Not Set"}</span>
-            </div>
-        </div>`,
-          )
-          .join("");
-      }
-      async function testProviders() {
-        await api("/api/providers/test", { method: "POST" });
-        loadProviders();
-      }
-
-      // ── Agents ──
-      async function loadAgents() {
-        const data = await api("/api/agents");
-        const el = document.getElementById("agentCards");
-        el.innerHTML = Object.entries(data)
-          .map(
-            ([name, a]) => `
-        <div class="card">
-            <div class="card-header">${a.display_name}<span class="badge ${a.enabled ? "badge-success" : "badge-danger"}">${a.status}</span></div>
-            <div class="card-body">
-                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:12px">${a.expertise}</p>
-                <div style="display:flex;gap:16px">
-                    <div><div style="font-size:20px;font-weight:700">${a.tasks_completed}</div><div style="font-size:11px;color:var(--text-dim)">Tasks</div></div>
-                    <div><div style="font-size:20px;font-weight:700">${Math.round(a.avg_latency_ms)}ms</div><div style="font-size:11px;color:var(--text-dim)">Avg Latency</div></div>
-                </div>
-            </div>
-        </div>`,
-          )
-          .join("");
-      }
-
-      // ── Activity ──
-      function addActivityItem(event) {
-        const feed = document.getElementById("activityFeed");
-        const cat = (event.type || "").split(".")[0] || "system";
-        const time = new Date().toLocaleTimeString().slice(0, 5);
-        const item = document.createElement("div");
-        item.className = `activity-item ${cat}`;
-        item.innerHTML = `<span class="activity-time">${time}</span><span class="activity-type ${cat}">${cat}</span><span>${event.type}: ${JSON.stringify(event.data || {}).slice(0, 80)}</span>`;
-        feed.prepend(item);
-        while (feed.children.length > 50) feed.removeChild(feed.lastChild);
-      }
-      async function loadActivity() {
-        const data = await api("/api/activity");
-        const el = document.getElementById("fullActivityFeed");
-        if (Array.isArray(data)) {
-          el.innerHTML = data
-            .reverse()
-            .map(
-              (a) => `
-            <div class="activity-item ${a.type || "system"}">
-                <span class="activity-time">${new Date(a.timestamp * 1000).toLocaleTimeString()}</span>
-                <span>${a.query || a.type || ""}</span>
-                <span class="badge badge-success">${a.status || ""}</span>
-            </div>`,
-            )
-            .join("");
-        }
-      }
-      async function loadDecisions() {
-        const data = await api("/api/decisions");
-        const el = document.getElementById("decisionsLog");
-        if (Array.isArray(data)) {
-          el.innerHTML = data
-            .map(
-              (d) => `
-            <div class="activity-item system">
-                <span class="activity-time">${new Date(d.timestamp * 1000).toLocaleTimeString()}</span>
-                <span><strong>${d.decision_type}:</strong> ${d.decision}</span>
-            </div>`,
-            )
-            .join("");
-        }
-      }
-
-      // ── Files ──
-      async function browseFiles() {
-        const path = document.getElementById("filePath").value || "~";
-        const data = await api("/api/files/list", {
-          method: "POST",
-          body: JSON.stringify({ path }),
-        });
-        const el = document.getElementById("fileList");
-        if (data.success && Array.isArray(data.output)) {
-          el.innerHTML = data.output
-            .map(
-              (f) => `
-            <div class="file-item" onclick="${f.type === "dir" ? `document.getElementById('filePath').value='${path}/${f.name}';browseFiles()` : ""}">
-                <span class="file-icon">${f.type === "dir" ? "📁" : "📄"}</span>
-                <span style="flex:1">${f.name}</span>
-                <span style="font-size:11px;color:var(--text-dim)">${f.type === "file" ? formatSize(f.size) : ""}</span>
-            </div>`,
-            )
-            .join("");
-        } else
-          el.innerHTML = `<p style="color:var(--danger)">${data.error || "Error"}</p>`;
-      }
-
-      // ── Terminal ──
-      async function runTerminal() {
-        const input = document.getElementById("terminalInput");
-        const out = document.getElementById("terminalOutput");
-        const cmd = input.value.trim();
-        if (!cmd) return;
-        input.value = "";
-        out.textContent += `\n$ ${cmd}\n`;
-        const data = await api("/api/terminal/run", {
-          method: "POST",
-          body: JSON.stringify({ command: cmd }),
-        });
-        out.textContent +=
-          (data.output?.stdout || "") +
-          (data.output?.stderr || data.error || "") +
-          "\n";
-        out.scrollTop = out.scrollHeight;
-      }
-
-      // ── Doctor ──
-      async function runDoctor() {
-        const el = document.getElementById("doctorResults");
-        el.innerHTML =
-          '<p style="color:var(--text-dim)">Running diagnostics...</p>';
-        const data = await api("/api/doctor");
-        if (data.results) {
-          el.innerHTML = data.results
-            .map((r) => {
-              const color = {
-                pass: "var(--success)",
-                warn: "var(--warning)",
-                fail: "var(--danger)",
-              }[r.status];
-              const icon = { pass: "✓", warn: "⚠", fail: "✗" }[r.status];
-              return `<div class="activity-item ${r.status === "fail" ? "error" : r.status === "warn" ? "system" : "tool"}" style="margin-bottom:4px">
-                <span style="color:${color};font-weight:700;min-width:20px">${icon}</span>
-                <span style="font-weight:600;min-width:150px">${r.name}</span>
-                <span>${r.message}</span>
-            </div>`;
-            })
-            .join("");
-          const s = data;
-          el.innerHTML += `<div style="margin-top:16px;padding:12px;border-top:1px solid var(--border)">
-            <strong>${s.healthy ? "✅ System Healthy" : "⚠️ Issues Found"}</strong> — 
-            Passed: ${s.passed} | Warnings: ${s.warnings} | Failed: ${s.failed}
-        </div>`;
-        }
-      }
-
-      // ── Brain Power ──
-      async function setBrainPower(level) {
-        await api(`/api/brain-power/${level}`, { method: "POST" });
-      }
-
-      // ── Helpers ──
-      function escHtml(s) {
-        const d = document.createElement("div");
-        d.textContent = s;
-        return d.innerHTML;
-      }
-      function formatContent(s) {
-        return escHtml(s)
-          .replace(/\n/g, "<br>")
-          .replace(
-            /```([\s\S]*?)```/g,
-            '<pre style="background:var(--bg-input);padding:12px;border-radius:8px;overflow-x:auto;margin:8px 0">$1</pre>',
-          );
-      }
-      function formatSize(b) {
-        const u = ["B", "KB", "MB", "GB"];
-        let i = 0;
-        while (b >= 1024 && i < u.length - 1) {
-          b /= 1024;
-          i++;
-        }
-        return `${b.toFixed(i ? 1 : 0)} ${u[i]}`;
-      }
-
-      // ── Init ──
-      document.addEventListener("DOMContentLoaded", () => {
-        connectWS();
-        loadStatus();
-        setInterval(loadStatus, 15000);
-      });
-    </script>
-    <script src="/static/app.js"></script>
-  </body>
+<!-- Scripts -->
+<script src="/static/app.js"></script>
+<script>
+    // Initialize Lucide icons mapping
+    lucide.createIcons();
+</script>
+</body>
 </html>
