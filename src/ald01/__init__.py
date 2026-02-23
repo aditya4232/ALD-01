@@ -1,12 +1,12 @@
 """
 ALD-01: Advanced Local Desktop Intelligence
-Your Personal AI Agent — Like OpenClaw, but simpler and working.
+Your Personal AI Agent — Open-source, privacy-first, fully local.
 
 Built with Python for maximum stability and zero build errors.
 """
 
 __version__ = "1.0.0"
-__author__ = "ALD-01 Team"
+__author__ = "Aditya Shenvi"
 __project__ = "ALD-01"
 __description__ = "Advanced Local Desktop Intelligence — Your Personal AI Agent"
 

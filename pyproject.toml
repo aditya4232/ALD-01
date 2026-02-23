@@ -10,7 +10,7 @@ readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
 authors = [
-    {name = "ALD-01 Team"},
+    {name = "Aditya Shenvi", email = "aditya4232@users.noreply.github.com"},
 ]
 keywords = ["ai", "agent", "assistant", "local", "ollama", "openai", "multi-agent"]
 classifiers = [
@@ -56,9 +56,9 @@ ald-01 = "ald01.cli:main"
 ald01 = "ald01.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/ald-01/ald-01"
-Repository = "https://github.com/ald-01/ald-01"
-Issues = "https://github.com/ald-01/ald-01/issues"
+Homepage = "https://github.com/aditya4232/ALD-01"
+Repository = "https://github.com/aditya4232/ALD-01"
+Issues = "https://github.com/aditya4232/ALD-01/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
